@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  image       String
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  orderItems  OrderItem[]
+  reviews     Review[]
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+  orders    Order[]
+  profile   Profile?
+  reviews  Review[]
+}
+
+model Profile {
+  id     Int    @id @default(autoincrement())
+  name   String
+  userId Int    @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  user      User        @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  product   Product @relation(fields: [productId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id])
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  content    String
+  rating     Int
+  createdAt  DateTime @default(now())
+  productId  Int
+  product    Product  @relation(fields: [productId], references: [id])
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+}
+
