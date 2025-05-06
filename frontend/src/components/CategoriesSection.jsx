@@ -68,6 +68,15 @@ export default function CategoriesSection() {
           </div>
         ))}
       </div>
+      <div className="text-center mt-10">
+        <a 
+          href="/catalog"
+          className="text-[#f59c9e] text-lg font-semibold underline hover:text-[#e0bcbc] transition"
+        >
+          View all products
+        </a>
+      </div>
     </section>
+
   );
 }
