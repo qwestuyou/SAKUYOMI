@@ -6,7 +6,6 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const router = express.Router();
 
-// Хранилище для Multer
 const storage = multer.diskStorage({
   destination: "uploads/avatars/",
   filename: (req, file, cb) => {

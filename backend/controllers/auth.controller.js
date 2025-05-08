@@ -42,14 +42,12 @@ export const register = async (req, res) => {
       res.status(500).json({ message: "Ошибка на сервере" });
     }
   };
-  
-
 
 export const getMe = async (req, res) => {
     try {
       const user = await prisma.user.findUnique({
         where: { id: req.user.id },
-        select: { id: true, name: true, email: true }
+        select: { id: true, name: true, email: true, avatar: true, createdAt: true }
       });
       res.json({ user });
     } catch (err) {

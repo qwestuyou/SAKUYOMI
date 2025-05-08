@@ -61,18 +61,31 @@ export default function Header() {
               >
                 Add Product
               </Link>
-              <Link
-                to="/profile"
-                className="px-5 py-2 bg-[#f59c9e] text-white rounded-full hover:bg-[#e0bcbc] text-sm mb-2 md:mb-0 transition-colors duration-300 nav-button"
-              >
-                Profile
-              </Link>
-              <button
-                onClick={logout}
-                className="px-5 py-2 bg-[#f59c9e] text-white rounded-full hover:bg-[#e0bcbc] text-sm transition-colors duration-300 nav-button"
-              >
-                Sign Out
-              </button>
+              <div className="relative group">
+          <img
+            src={
+              user.avatar
+                ? `http://localhost:5000${user.avatar}`
+                : "/images/default-avatar.png"
+            }
+            alt="avatar"
+            className="w-15 h-15 rounded-full object-cover cursor-pointer border-2 border-[#f59c9e]"
+          />
+          <div className="absolute right-0 w-32 bg-white rounded-xl shadow-lg py-2 hidden group-hover:block z-50">
+            <Link
+              to="/profile"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#feeae6]"
+            >
+              Profile
+            </Link>
+            <button
+              onClick={logout}
+              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-[#feeae6]"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
             </>
           ) : (
             <>

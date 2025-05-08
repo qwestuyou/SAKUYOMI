@@ -25,7 +25,7 @@ export default function Home() {
   }, [location.search]);
 
   return (
-    <div className="p-4">
+    <div>
       <Header />
       <WelcomeBanner />
       <CategoriesSection />
