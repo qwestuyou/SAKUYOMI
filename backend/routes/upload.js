@@ -23,10 +23,9 @@ const upload = multer({ storage });
 router.post("/avatar", authMiddleware, upload.single("avatar"), async (req, res) => {
   try {
     if (!req.file) {
-      console.log("⚠️ Файл не был получен multer");
+      
       return res.status(400).json({ message: "No file uploaded" });
     }
-    console.log("✅ Файл получен multer:", req.file);
 
     const avatarUrl = `/uploads/avatars/${req.file.filename}`;
 

@@ -1,13 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
 import { FaPen } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Profile() {
   const { user, setUser } = useAuth();
   const [preview, setPreview] = useState(user?.avatar || "");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [reviews, setReviews] = useState([])
+
+  useEffect(() => {
+    if (user?.id) {
+      fetch(`http://localhost:5000/api/reviews/user/${user.id}`)
+        .then(res => res.json())
+        .then(data => setReviews(data))
+        .catch(err => console.error("Error fetching user reviews:", err));
+    }
+  }, [user?.id]);
 
   if (!user) {
     return (
@@ -59,22 +70,23 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-[#fff6f4] text-gray-800">
       <Header />
-      <div className="max-w-2xl mx-auto p-6 mt-10 bg-white rounded-xl shadow-md">
-        <div className="relative group w-32 h-32">
-          <label htmlFor="avatar-upload">
-            <img
-              src={
-                preview
-                  ? preview.startsWith("blob:")
-                    ? preview
-                    : `http://localhost:5000${preview}`
-                  : user.avatar
-                    ? `http://localhost:5000${user.avatar}`
-                    : "/images/default-avatar.png"
-              }
-              alt="avatar"
-              className="w-32 h-32 rounded-full object-cover border cursor-pointer"
-            />
+      <div className="max-w-4xl mx-auto p-6 mt-10 bg-white rounded-xl shadow-md">
+        <div className="flex flex-col md:flex-row items-center gap-8">
+          <div className="relative group w-32 h-32">
+            <label htmlFor="avatar-upload">
+              <img
+                src={
+                  preview
+                    ? preview.startsWith("blob:")
+                      ? preview
+                      : `http://localhost:5000${preview}`
+                    : user.avatar
+                      ? `http://localhost:5000${user.avatar}`
+                      : "/images/default-avatar.png"
+                }
+                alt="avatar"
+                className="w-32 h-32 rounded-full object-cover border cursor-pointer"
+              />
               <div className="absolute bottom-1 right-1 bg-[#f59c9e] text-white p-2 rounded-full shadow-md hover:bg-[#e0bcbc] transition">
                 <FaPen size={12} />
               </div>
@@ -88,38 +100,71 @@ export default function Profile() {
             />
           </div>
 
-          {selectedFile && (
-            <button
-              onClick={handleSaveAvatar}
-              className="bg-[#f59c9e] text-white mt-5 px-6 py-2 rounded-xl hover:bg-[#e0bcbc] transition"
+          <div className="flex-1 space-y-2">
+            <div className="text-lg">
+              <span className="font-semibold text-[#f59c9e]">Name:</span> {user.name}
+            </div>
+            <div className="text-lg">
+              <span className="font-semibold text-[#f59c9e]">Email:</span> {user.email}
+            </div>
+            <div className="text-lg">
+              <span className="font-semibold text-[#f59c9e]">Member since:</span>{" "}
+              {new Date(user.createdAt).toLocaleDateString()}
+            </div>
+
+            {selectedFile && (
+              <button
+                onClick={handleSaveAvatar}
+                className="bg-[#f59c9e] text-white mt-3 px-6 py-2 rounded-xl hover:bg-[#e0bcbc] transition"
+              >
+                Save Avatar
+              </button>
+            )}
+          </div>
+          <Link
+              to="/edit-profile"
+              className="flex items-center text-[#f59c9e] mb-15 px-4 rounded-full transition"
             >
-              Save Avatar
-            </button>
+              <FaPen size={20} />
+            </Link>
+        </div>
+
+        {/* Order History */}
+        <div className="mt-10 bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-2xl font-bold text-[#f59c9e] mb-4">Order History</h2>
+          <p className="text-gray-600 italic">You have no orders yet.</p>
+        </div>
+
+        {/* Wishlist */}
+        <div className="mt-6 bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-2xl font-bold text-[#f59c9e] mb-4">Wishlist</h2>
+          <p className="text-gray-600 italic">Your wishlist is empty.</p>
+        </div>
+
+        {/* User Reviews */}
+        <div className="mt-6 mb-10 bg-white p-6 rounded-xl shadow-md">
+          <h2 className="text-2xl font-bold text-[#f59c9e] mb-4">Your Reviews</h2>
+          {reviews.length === 0 ? (
+            <p className="text-gray-600 italic">You haven't left any reviews yet.</p>
+          ) : (
+            <ul className="space-y-4">
+              {reviews.map((review) => (
+                <li key={review.id} className="bg-[#fff6f4] p-4 rounded-lg border border-[#fcd5d5]">
+                  <div className="flex justify-between items-center mb-2">
+                    <Link
+                      to={`/product/${review.product.id}`}
+                      className="text-[#f59c9e] font-semibold hover:underline"
+                    >
+                      {review.product.name}
+                    </Link>
+                    <span className="text-sm text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  <p className="text-gray-700">{review.content}</p>
+                </li>
+              ))}
+            </ul>
           )}
-
-          <div className="text-lg">
-            <span className="font-semibold text-[#f59c9e]">Name:</span> {user.name}
-          </div>
-          <div className="text-lg">
-            <span className="font-semibold text-[#f59c9e]">Email:</span> {user.email}
-          </div>
-          <div className="text-lg">
-            <span className="font-semibold text-[#f59c9e]">Member since:</span>{" "}
-            {new Date(user.createdAt).toLocaleDateString()}
-          </div>
-
-          {/* Order History */}
-          <div className="max-w-2xl mx-auto mt-10 bg-white p-6 rounded-xl shadow-md">
-            <h2 className="text-2xl font-bold text-[#f59c9e] mb-4">Order History</h2>
-            <p className="text-gray-600 italic">You have no orders yet.</p>
-          </div>
-
-          {/* Wishlist */}
-          <div className="max-w-2xl mx-auto mt-6 mb-10 bg-white p-6 rounded-xl shadow-md">
-            <h2 className="text-2xl font-bold text-[#f59c9e] mb-4">Wishlist</h2>
-            <p className="text-gray-600 italic">Your wishlist is empty.</p>
-          </div>
-
+        </div>
       </div>
       <Footer />
     </div>
