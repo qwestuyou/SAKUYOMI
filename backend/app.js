@@ -7,6 +7,7 @@ import session from "express-session";
 import passport from "./config/passport.js";
 import categoryRoutes from "./routes/categories.js";
 import reviewRoutes from './routes/reviews.js';
+import profileRoutes from "./routes/profile.js";
 
 dotenv.config();
 
@@ -19,6 +20,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/reviews", reviewRoutes);
 
+app.use("/uploads", express.static("uploads"))
+
 app.use(session({
   secret: process.env.JWT_SECRET,
   resave: false,
@@ -27,6 +30,7 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Сервер запущен на http://localhost:${PORT}`));

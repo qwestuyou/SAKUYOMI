@@ -33,7 +33,8 @@ model User {
   createdAt DateTime @default(now())
   orders    Order[]
   profile   Profile?
-  reviews  Review[]
+  reviews   Review[]
+  avatar    String?
 }
 
 model Profile {
