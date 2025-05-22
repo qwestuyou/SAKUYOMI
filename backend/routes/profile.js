@@ -21,6 +21,14 @@ router.post("/avatar", upload.single("avatar"), async (req, res) => {
   try {
     const userId = req.body.userId;
 
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    if (!userId) {
+      return res.status(400).json({ error: "Missing userId in request body" });
+    }
+
     const avatarPath = `/uploads/avatars/${req.file.filename}`;
 
     const updatedUser = await prisma.user.update({
@@ -29,9 +37,13 @@ router.post("/avatar", upload.single("avatar"), async (req, res) => {
     });
 
     res.json({ message: "Avatar updated", avatar: avatarPath, user: updatedUser });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to upload avatar" });
+  } catch (error) {
+    console.error("POST /avatar Error:", error);
+    res.status(500).json({
+      error: "Failed to upload avatar",
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
   }
 });
 

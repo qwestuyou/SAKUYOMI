@@ -5,7 +5,7 @@ import { SiTiktok } from "react-icons/si";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#fedfe1] text-gray-800 mt-12 border-t border-pink-100">
+    <footer className="bg-[#fedfe1]">
       <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
         <div>
           <h3 className="font-bold text-lg mb-2 text-gray-800 gap-2">About Us</h3>

@@ -4,8 +4,17 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const products = await prisma.product.findMany({ include: { category: true } });
-  res.json(products);
+  try {
+    const products = await prisma.product.findMany({ include: { category: true } });
+    res.json(products);
+  } catch (error) {
+    console.error("GET / Error:", error);
+    res.status(500).json({
+      error: "Error fetching products",
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
+  }
 });
 
 router.post("/", async (req, res) => {
@@ -22,26 +31,34 @@ router.post("/", async (req, res) => {
     });
     res.status(201).json(product);
   } catch (error) {
-    res.status(500).json({ error: "Error creating product" });
+    console.error("POST / Error:", error);
+    res.status(500).json({
+      error: "Error creating product",
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const product = await prisma.product.findUnique({
       where: { id: parseInt(id) },
-      include: { category: true }
+      include: { category: true },
     });
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
     res.json(product);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Server error" });
+  } catch (error) {
+    console.error(`GET /${id} Error:`, error);
+    res.status(500).json({
+      error: "Error fetching product by ID",
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
   }
 });
-
 
 export default router;
