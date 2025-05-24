@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaGoogle, FaDiscord } from "react-icons/fa";
+import { useNotification } from "../components/Notification";
 
 export default function Register() {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -7,6 +8,8 @@ export default function Register() {
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+
+  const notify = useNotification();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,16 +19,21 @@ export default function Register() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
+
       const data = await res.json();
 
       if (res.ok) {
-        alert("Аккаунт успешно создан!");
-        window.location.href = "/login";
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        notify("Аккаунт успешно создан!", "success");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 500); // немного подождать, чтобы юзер увидел сообщение
       } else {
-        alert(data.message || "Ошибка регистрации");
+        notify(data.message || "Ошибка регистрации", "error");
       }
     } catch (err) {
-      alert("Ошибка при отправке данных");
+      notify("Ошибка при отправке данных", "error");
       console.error(err);
     }
   };
@@ -84,20 +92,17 @@ export default function Register() {
           </div>
 
           <style jsx>{`
-          @keyframes fadeIn {
-            from {
-              opacity: 0;
-              transform: translateY(-10px);
+            @keyframes fadeIn {
+              from {
+                opacity: 0;
+                transform: translateY(-10px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
             }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          .animate-fadeIn {
-            animation: fadeIn 0.5s ease-out;
-          }
-        `}</style>
+          `}</style>
         </div>
       </div>
   );

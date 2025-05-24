@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { FaGoogle, FaDiscord } from "react-icons/fa";
+import { useNotification } from "../components/Notification";
 
 export default function Login() {
   const { login } = useAuth();
@@ -25,6 +26,8 @@ export default function Login() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const notify = useNotification();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -39,12 +42,15 @@ export default function Login() {
       if (res.ok) {
         localStorage.setItem("token", data.token);
         login(data.user, data.token);
-        window.location.href = "/";
+        notify("Успешный вход", "success");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 500);
       } else {
-        alert(data.message || "Ошибка входа");
+        notify(data.message || "Ошибка входа", "error");
       }
     } catch (err) {
-      alert("Ошибка при входе");
+      notify("Ошибка при входе", "error");
       console.error(err);
     }
   };
@@ -97,20 +103,17 @@ export default function Login() {
         </div>
         
         <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
           }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-out;
-        }
-      `}</style>
+        `}</style>
       </div>
   );
 }
