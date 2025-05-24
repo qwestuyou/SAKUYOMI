@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import { FaPen, FaSignOutAlt, FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 export default function Profile() {
   const { user, setUser, logout } = useAuth();
+  const { theme } = useTheme();
   const [preview, setPreview] = useState(user?.avatar || "");
   const [selectedFile, setSelectedFile] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -22,11 +24,9 @@ export default function Profile() {
 
   if (!user) {
     return (
-        <div className="min-h-screen bg-[#fff6f4] text-gray-800">
+        <div className={`${theme === "dark" ? "bg-[#1a1a1a] text-white" : "bg-[#fff6f4] text-gray-800"} min-h-screen`}>
           <Header />
-          <div className="text-center mt-20 text-xl text-gray-600">
-            You are not logged in.
-          </div>
+          <div className="text-center mt-20 text-xl text-gray-500">You are not logged in.</div>
           <Footer />
         </div>
     );
@@ -65,10 +65,14 @@ export default function Profile() {
     }
   };
 
+  const cardBg = theme === "dark" ? "bg-[#2b2b2b] text-white" : "bg-white text-gray-800";
+  const sectionBg = theme === "dark" ? "bg-[#333] text-gray-100" : "bg-[#fff0f2] text-gray-800";
+  const reviewCardBg = theme === "dark" ? "bg-[#3a3a3a] border-[#555] text-gray-100" : "bg-[#fff6f4] border-[#fcd5d5] text-gray-700";
+
   return (
-      <div className="min-h-screen bg-[#fff6f4] text-gray-800">
+      <div className={`${theme === "dark" ? "bg-[#1a1a1a] text-white" : "bg-[#fff6f4] text-gray-800"} min-h-screen`}>
         <Header />
-        <div className="max-w-4xl mx-auto p-6 mt-10 bg-white rounded-3xl shadow-xl relative">
+        <div className={`max-w-4xl mx-auto p-6 mt-10 rounded-3xl shadow-xl relative transition-colors duration-300 ${cardBg}`}>
           <div className="flex justify-between items-start">
             <div className="flex flex-col md:flex-row items-center gap-8">
               <div className="relative w-32 h-32 group">
@@ -150,28 +154,28 @@ export default function Profile() {
           </div>
 
           {/* Order History */}
-          <div className="mt-10 bg-[#fff0f2] p-6 rounded-3xl shadow-lg hover:shadow-xl transition duration-300">
+          <div className={`mt-10 p-6 rounded-3xl shadow-lg hover:shadow-xl transition duration-300 ${sectionBg}`}>
             <h2 className="text-2xl font-bold text-[#f59c9e] mb-4">Order History</h2>
-            <p className="text-gray-600 italic">You have no orders yet.</p>
+            <p className="italic text-sm opacity-80">You have no orders yet.</p>
           </div>
 
           {/* Wishlist */}
-          <div className="mt-6 bg-[#fff0f2] p-6 rounded-3xl shadow-lg hover:shadow-xl transition duration-300">
+          <div className={`mt-6 p-6 rounded-3xl shadow-lg hover:shadow-xl transition duration-300 ${sectionBg}`}>
             <h2 className="text-2xl font-bold text-[#f59c9e] mb-4">Wishlist</h2>
-            <p className="text-gray-600 italic">Your wishlist is empty.</p>
+            <p className="italic text-sm opacity-80">Your wishlist is empty.</p>
           </div>
 
-          {/* User Reviews */}
-          <div className="mt-6 mb-10 bg-[#fff0f2] p-6 rounded-3xl shadow-lg hover:shadow-xl transition duration-300">
+          {/* Reviews */}
+          <div className={`mt-6 mb-10 p-6 rounded-3xl shadow-lg hover:shadow-xl transition duration-300 ${sectionBg}`}>
             <h2 className="text-2xl font-bold text-[#f59c9e] mb-4">Your Reviews</h2>
             {reviews.length === 0 ? (
-                <p className="text-gray-600 italic">You haven't left any reviews yet.</p>
+                <p className="italic text-sm opacity-80">You haven't left any reviews yet.</p>
             ) : (
                 <ul className="space-y-4">
                   {reviews.map((review) => (
                       <li
                           key={review.id}
-                          className="bg-[#fff6f4] p-4 rounded-xl border border-[#fcd5d5] shadow-sm hover:shadow-md transition duration-300"
+                          className={`p-4 rounded-xl border shadow-sm hover:shadow-md transition duration-300 ${reviewCardBg}`}
                       >
                         <div className="flex justify-between items-center mb-2">
                           <Link
@@ -180,7 +184,7 @@ export default function Profile() {
                           >
                             {review.product.name}
                           </Link>
-                          <span className="text-sm text-gray-400">
+                          <span className="text-sm opacity-50">
                       {new Date(review.createdAt).toLocaleDateString()}
                     </span>
                         </div>
@@ -195,7 +199,7 @@ export default function Profile() {
                               />
                           ))}
                         </div>
-                        <p className="text-gray-700">{review.content}</p>
+                        <p>{review.content}</p>
                       </li>
                   ))}
                 </ul>
