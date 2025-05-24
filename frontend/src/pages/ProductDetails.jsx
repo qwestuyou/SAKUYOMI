@@ -88,10 +88,10 @@ export default function ProductDetails() {
       <Header />
       <div className="max-w-6xl mx-auto p-6">
         <button
-            onClick={() => navigate(-1)}
-            className="inline-block mb-6 text-gray-800 px-6 py-3 rounded-full hover:bg-[#e0bcbc] transition"
-            >
-            ← Back
+          onClick={() => navigate(-1)}
+          className="inline-block mb-6 text-gray-800 px-6 py-3 rounded-full transition cursor-pointer"
+        >
+          ← Back
         </button>
       </div>
       <div className="max-w-6xl mx-auto p-6 flex flex-col md:flex-row gap-8">
@@ -152,18 +152,19 @@ export default function ProductDetails() {
         </form>
 
         {/* Список відгуків */}
-        {reviews.map(review => (
+        <ul className="list-none space-y-4">
+          {reviews.map(review => (
             <li key={review.id} className="bg-[#feeae6] p-4 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
-                <span className="text-yellow-400">{'⭐'.repeat(review.rating)}</span>
+                <span className="text-yellow-400">{'⭐️'.repeat(review.rating)}</span>
                 <span className="text-sm text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</span>
                 </div>
                 <p className="font-semibold text-[#c97476]">{review.user?.name || 'Anonymous'}</p>
                 <p>{review.content}</p>
             </li>
             ))}
+        </ul>
       </div>
-
       <Footer />
     </div>
   );

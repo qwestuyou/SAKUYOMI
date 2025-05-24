@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
-import { FaPen } from "react-icons/fa";
+import { FaPen, FaSignOutAlt, FaStar } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 export default function Profile() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, logout } = useAuth();
   const [preview, setPreview] = useState(user?.avatar || "");
   const [selectedFile, setSelectedFile] = useState(null);
-  const [reviews, setReviews] = useState([])
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
     if (user?.id) {
@@ -61,7 +61,7 @@ export default function Profile() {
         setPreview(data.avatar);
         setSelectedFile(null);
       }
-      
+
     } catch (err) {
       console.error("Error uploading avatar:", err);
     }
@@ -70,63 +70,74 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-[#fff6f4] text-gray-800">
       <Header />
-      <div className="max-w-4xl mx-auto p-6 mt-10 bg-white rounded-xl shadow-md">
-        <div className="flex flex-col md:flex-row items-center gap-8">
-          <div className="relative group w-32 h-32">
-            <label htmlFor="avatar-upload">
-              <img
-                src={
-                  preview
-                    ? preview.startsWith("blob:")
-                      ? preview
-                      : `http://localhost:5000${preview}`
-                    : user.avatar
-                      ? `http://localhost:5000${user.avatar}`
-                      : "/images/default-avatar.png"
-                }
-                alt="avatar"
-                className="w-32 h-32 rounded-full object-cover border cursor-pointer"
+      <div className="max-w-4xl mx-auto p-6 mt-10 bg-white rounded-xl shadow-md relative">
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="relative group w-32 h-32">
+              <label htmlFor="avatar-upload">
+                <img
+                  src={
+                    preview
+                      ? preview.startsWith("blob:")
+                        ? preview
+                        : `http://localhost:5000${preview}`
+                      : user.avatar
+                        ? `http://localhost:5000${user.avatar}`
+                        : "/images/default-avatar.png"
+                  }
+                  alt="avatar"
+                  className="w-32 h-32 rounded-full object-cover border cursor-pointer"
+                />
+                <div className="absolute bottom-1 right-1 bg-[#f59c9e] text-white p-2 rounded-full shadow-md hover:bg-[#e0bcbc] transition">
+                  <FaPen size={12} />
+                </div>
+              </label>
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
               />
-              <div className="absolute bottom-1 right-1 bg-[#f59c9e] text-white p-2 rounded-full shadow-md hover:bg-[#e0bcbc] transition">
-                <FaPen size={12} />
+            </div>
+
+            <div className="flex-1 space-y-2">
+              <div className="text-lg">
+                <span className="font-semibold text-[#f59c9e]">Name:</span> {user.name}
               </div>
-            </label>
-            <input
-              id="avatar-upload"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-            />
+              <div className="text-lg">
+                <span className="font-semibold text-[#f59c9e]">Email:</span> {user.email}
+              </div>
+              <div className="text-lg">
+                <span className="font-semibold text-[#f59c9e]">Member since:</span>{" "}
+                {new Date(user.createdAt).toLocaleDateString()}
+              </div>
+
+              {selectedFile && (
+                <button
+                  onClick={handleSaveAvatar}
+                  className="bg-[#f59c9e] text-white mt-3 px-6 py-2 rounded-xl hover:bg-[#e0bcbc] transition"
+                >
+                  Save Avatar
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="flex-1 space-y-2">
-            <div className="text-lg">
-              <span className="font-semibold text-[#f59c9e]">Name:</span> {user.name}
-            </div>
-            <div className="text-lg">
-              <span className="font-semibold text-[#f59c9e]">Email:</span> {user.email}
-            </div>
-            <div className="text-lg">
-              <span className="font-semibold text-[#f59c9e]">Member since:</span>{" "}
-              {new Date(user.createdAt).toLocaleDateString()}
-            </div>
-
-            {selectedFile && (
-              <button
-                onClick={handleSaveAvatar}
-                className="bg-[#f59c9e] text-white mt-3 px-6 py-2 rounded-xl hover:bg-[#e0bcbc] transition"
-              >
-                Save Avatar
-              </button>
-            )}
-          </div>
-          <Link
+          <div className="flex flex-col items-end gap-2">
+            <Link
               to="/edit-profile"
-              className="flex items-center text-[#f59c9e] mb-15 px-4 rounded-full transition"
+              className="flex items-center gap-2 bg-[#f59c9e] text-white px-4 py-2 rounded-full hover:bg-[#e0bcbc] transition"
             >
-              <FaPen size={20} />
+              <FaPen size={14} /> Edit Profile
             </Link>
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 bg-[#f59c9e] text-white px-4 py-2 rounded-full hover:bg-[#e0bcbc] transition"
+            >
+              <FaSignOutAlt size={14} /> Sign Out
+            </button>
+          </div>
         </div>
 
         {/* Order History */}
@@ -158,6 +169,17 @@ export default function Profile() {
                       {review.product.name}
                     </Link>
                     <span className="text-sm text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex items-center gap-1 mb-1">
+                    {[...Array(5)].map((_, i) => (
+                      <FaStar
+                        key={i}
+                        size={14}
+                        className={
+                          i < review.rating ? "text-yellow-400" : "text-gray-300"
+                        }
+                      />
+                    ))}
                   </div>
                   <p className="text-gray-700">{review.content}</p>
                 </li>
