@@ -28,7 +28,7 @@ export default function Register() {
         notify("Аккаунт успешно создан!", "success");
         setTimeout(() => {
           window.location.href = "/";
-        }, 500); // немного подождать, чтобы юзер увидел сообщение
+        }, 500);
       } else {
         notify(data.message || "Ошибка регистрации", "error");
       }
