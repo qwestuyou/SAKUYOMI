@@ -61,7 +61,7 @@ export default function Catalog() {
       
       {/* Сайдбар с категориями */}
       <aside className="w-full md:w-1/4">
-        <div className="bg-white p-4 rounded-2xl shadow-md sticky top-24">
+        <div className="bg-white p-4 rounded-2xl shadow-md">
           <h2 className="text-xl font-bold mb-4 text-[#f59c9e]">Categories</h2>
           <ul className="space-y-2">
             {categoriesList.map((cat) => (

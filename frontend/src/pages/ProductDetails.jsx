@@ -151,19 +151,45 @@ export default function ProductDetails() {
           </div>
         </form>
 
-        {/* Список відгуків */}
-        <ul className="list-none space-y-4">
-          {reviews.map(review => (
-            <li key={review.id} className="bg-[#feeae6] p-4 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                <span className="text-yellow-400">{'⭐️'.repeat(review.rating)}</span>
-                <span className="text-sm text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</span>
-                </div>
-                <p className="font-semibold text-[#c97476]">{review.user?.name || 'Anonymous'}</p>
-                <p>{review.content}</p>
-            </li>
-            ))}
-        </ul>
+{/* Список відгуків */}
+<ul className="list-none space-y-4">
+  {reviews.map((review) => (
+    <li key={review.id} className="bg-white p-4 rounded-2xl shadow-sm border border-pink-100 hover:shadow-md transition">
+      
+      {/* Верхній блок: аватарка + ім’я — ліворуч, зірки + дата — праворуч */}
+      <div className="flex justify-between items-center mb-3">
+        {/* Аватарка і ім'я */}
+        <div className="flex items-center gap-3">
+          <img
+            src={
+              review.user?.avatar
+                ? `http://localhost:5000${review.user.avatar}`
+                : "/images/default-avatar.png"
+            }
+            alt="User Avatar"
+            className="w-10 h-10 rounded-full object-cover border border-pink-200"
+          />
+          <p className="font-semibold text-[#c97476]">
+            {review.user?.name || "Anonymous"}
+          </p>
+        </div>
+
+        {/* Рейтинг і дата */}
+        <div className="flex items-center gap-3 text-sm text-gray-400">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-yellow-400">{'⭐️'.repeat(review.rating)}</span>
+          </div>
+          <span>{new Date(review.createdAt).toLocaleDateString()}</span>
+        </div>
+      </div>
+
+          {/* Контент відгуку */}
+          <p className="text-gray-700">{review.content}</p>
+        </li>
+      ))}
+    </ul>
+
+
       </div>
       <Footer />
     </div>
