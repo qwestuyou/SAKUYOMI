@@ -87,9 +87,9 @@ export default function Catalog() {
   const sidebarBg = theme === "dark" ? "bg-[#2b2b2b]" : "bg-white";
   const mainBg = theme === "dark" ? "bg-[#2b2b2b]" : "bg-white";
   const cardBg = theme === "dark" ? "bg-[#333] border-gray-600" : "bg-white border-pink-200";
-  const headingColor = theme === "dark" ? "text-pink-200" : "text-[#f59c9e]";
-  const linkActive = theme === "dark" ? "bg-pink-600 text-white" : "bg-[#f59c9e] text-white";
-  const linkHover = theme === "dark" ? "hover:bg-pink-500" : "hover:bg-[#feeae6]";
+  const headingColor = theme === "dark" ? "text-[#ffffff]" : "text-[#f59c9e]";
+  const linkActive = theme === "dark" ? "bg-[#9b5f5f] text-white" : "bg-[#f59c9e] text-white";
+  const linkHover = theme === "dark" ? "hover:bg-[#242424]" : "hover:bg-[#feeae6]";
 
   function toggleWishlist(id) {
     setWishlist(prev => {
@@ -307,55 +307,67 @@ export default function Catalog() {
           </aside>
 
           <main className="flex-1 space-y-8">
-            {/* Товары */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map(product => (
-                  <Link
-                    to={`/product/${product.id}`}
-                    key={product.id}
-                    className={`${cardBg} rounded-2xl shadow hover:shadow-lg transform hover:scale-[1.02] p-5 transition-all duration-300 relative`}
-                  >
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="rounded-xl mb-3 w-full h-60 object-cover"
-                    />
-                    <h3 className="text-xl font-semibold mb-3">{product.name}</h3>
-                    <p className="text-sm opacity-70 mb-5">{product.description}</p>
-
-                    <p className={`font-bold ${headingColor} text-center text-2xl mb-5`}>
-                      {product.price} ₴
-                    </p>
-
-                    {/* Кнопка "вишлист" */}
-                    <button
-                      onClick={e => {
-                        e.preventDefault();
-                        toggleWishlist(product.id);
-                      }}
-                      className="absolute top-5 right-5 text-2xl focus:outline-none"
-                      aria-label={wishlist[product.id] ? "Remove from wishlist" : "Add to wishlist"}
-                      title={wishlist[product.id] ? "Remove from wishlist" : "Add to wishlist"}
+                    <Link
+                        to={`/product/${product.id}`}
+                        key={product.id}
+                        className={`${cardBg} relative rounded-3xl backdrop-blur-xl bg-white/10 dark:bg-white/5 border border-white/10 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-[1.01] transition-all duration-300 overflow-hidden p-5 flex flex-col`}
                     >
-                      {wishlist[product.id] ? (
-                        <FaHeart className="text-red-600" />
-                      ) : (
-                        <FaRegHeart className="text-gray-400 hover:text-red-500 transition-colors duration-300" />
-                      )}
-                    </button>
-                    {/* Кнопка корзины снизу справа */}
-                    <button
-                      onClick={e => {
-                        e.preventDefault();
-                        addToCart(product.id);
-                      }}
-                      className="absolute bottom-5 right-5 text-2xl focus:outline-none text-red-600 hover:text-green-600"
-                      aria-label="Add to cart"
-                      title="Add to cart"
-                    >
-                      <FaShoppingCart />
-                    </button>
-                  </Link>
+                      <div className="relative mb-4">
+                        <img
+                            src={product.image}
+                            alt={product.name}
+                            className="rounded-xl w-full h-60 object-cover"
+                        />
+
+                        <button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              toggleWishlist(product.id);
+                            }}
+                            className="absolute top-3 right-3 text-2xl bg-white/20 backdrop-blur-sm p-2 rounded-full shadow-md hover:scale-110 transition-transform duration-300"
+                            aria-label={wishlist[product.id] ? "Remove from wishlist" : "Add to wishlist"}
+                            title={wishlist[product.id] ? "Remove from wishlist" : "Add to wishlist"}
+                        >
+                          {wishlist[product.id] ? (
+                              <FaHeart className="text-red-500" />
+                          ) : (
+                              <FaRegHeart className="text-white hover:text-red-400 transition-colors" />
+                          )}
+                        </button>
+                      </div>
+
+                      <div className="flex-1 flex flex-col justify-between">
+                        <div className="mb-4">
+                          <h3 className="text-lg font-semibold mb-1 truncate">{product.name}</h3>
+                          <p className="text-sm opacity-70 line-clamp-2">{product.description}</p>
+                        </div>
+
+                        <div className="flex items-center justify-between mt-auto">
+                          <p className={`font-bold ${headingColor} text-xl leading-none`}>
+                            {product.price} ₴
+                          </p>
+
+                          <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                addToCart(product.id);
+                              }}
+                              className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm shadow-md border border-white/30 backdrop-blur-md transition-all duration-300 hover:shadow-lg hover:-translate-y-[1px] hover:scale-105 active:scale-95 ${
+                                  theme === "dark"
+                                      ? "text-white bg-[#9b5f5f] hover:bg-[#d87c7e]"
+                                      : "text-white bg-[#f59c9e] hover:bg-[#e88c8e]"
+                              }`}
+                              aria-label="Add to cart"
+                              title="Add to cart"
+                          >
+                            <FaShoppingCart className="text-base" />
+                            <span>Add to card</span>
+                          </button>
+                        </div>
+                      </div>
+                    </Link>
                 ))}
             </div>
           </main>
