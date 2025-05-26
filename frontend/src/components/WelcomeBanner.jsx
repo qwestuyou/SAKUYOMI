@@ -9,7 +9,7 @@ export default function WelcomeBanner() {
             ? "/videos/black.mp4"
             : "/videos/light.mp4";
 
-    const textColor = theme === "dark" ? "text-pink-100" : "text-[#c97476]";
+    const textColor = theme === "dark" ? "text-pink-100" : "text-[#ffffff";
     const shadow =
         theme === "dark"
             ? "drop-shadow-[0_2px_4px_rgba(255,255,255,0.3)]"
@@ -30,7 +30,7 @@ export default function WelcomeBanner() {
             </video>
 
             <div className="relative z-10 flex items-center justify-center h-full px-4">
-                <div className="px-6 py-4 bg-black/30 dark:bg-black/50 rounded-2xl backdrop-blur-sm">
+                <div className="px-6 py-4 mt-145 rounded-2xl">
                     <h1
                         className={`text-5xl sm:text-4xl font-semibold text-center transition-colors duration-300 ${textColor} ${shadow}`}
                     >

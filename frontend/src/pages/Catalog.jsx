@@ -4,18 +4,6 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useTheme } from "../context/ThemeContext";
 
-const categoriesList = [
-  "All",
-  "Manga",
-  "Figures",
-  "Poster",
-  "Badge",
-  "Clothing",
-  "Accessories",
-  "Funko Pop! Anime",
-  "Stationery"
-];
-
 export default function Catalog() {
   const { theme } = useTheme();
   const location = useLocation();
@@ -24,25 +12,33 @@ export default function Catalog() {
   const currentCategory = category?.toLowerCase() || "all";
 
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [sizeFilter, setSizeFilter] = useState("");
   const [languageFilter, setLanguageFilter] = useState("");
 
   useEffect(() => {
+    fetch("http://localhost:5000/api/categories")
+      .then(res => res.json())
+      .then(data => {
+        setCategories(data);
+      })
+      .catch(console.error);
+  }, []);
+
+  useEffect(() => {
     fetch("http://localhost:5000/api/products")
-        .then(res => res.json())
-        .then(data => {
-          if (category && category.toLowerCase() !== "all") {
-            setProducts(
-                data.filter(
-                    p => p.category?.name.toLowerCase() === category.toLowerCase()
-                )
-            );
-          } else {
-            setProducts(data);
-          }
-        })
-        .catch(console.error);
+      .then(res => res.json())
+      .then(data => {
+        if (category && category.toLowerCase() !== "all") {
+          setProducts(
+            data.filter(p => p.category?.slug === category.toLowerCase())
+          );
+        } else {
+          setProducts(data);
+        }
+      })
+      .catch(console.error);
   }, [category]);
 
   const filteredProducts = products.filter(product => {
@@ -52,9 +48,7 @@ export default function Catalog() {
     if (currentCategory === "manga" && languageFilter) {
       return product.language === languageFilter;
     }
-    return (
-        product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
+    return product.price >= priceRange[0] && product.price <= priceRange[1];
   });
 
   // Тема
@@ -75,21 +69,29 @@ export default function Catalog() {
           <aside className="w-full md:w-1/4">
             <div className={`${sidebarBg} p-4 rounded-2xl shadow-md transition-colors duration-300`}>
               <h2 className={`text-xl font-bold mb-4 ${headingColor}`}>Categories</h2>
-              <ul className="space-y-2">
-                {categoriesList.map(cat => {
-                  const isActive = currentCategory === cat.toLowerCase();
-                  return (
-                      <li key={cat}>
+                <ul className="space-y-2">
+                  <li>
+                    <Link
+                      to="/catalog"
+                      className={`block p-2 rounded-xl transition ${currentCategory === "all" ? linkActive : linkHover}`}
+                    >
+                      All
+                    </Link>
+                  </li>
+                  {categories.map(cat => {
+                    const isActive = currentCategory === cat.slug;
+                    return (
+                      <li key={cat.id}>
                         <Link
-                            to={cat === "All" ? "/catalog" : `/catalog?category=${cat.toLowerCase()}`}
-                            className={`block p-2 rounded-xl transition ${isActive ? linkActive : linkHover}`}
+                          to={`/catalog?category=${cat.slug}`}
+                          className={`block p-2 rounded-xl transition ${isActive ? linkActive : linkHover}`}
                         >
-                          {cat}
+                          {cat.name}
                         </Link>
                       </li>
-                  );
-                })}
-              </ul>
+                    );
+                  })}
+                </ul>
             </div>
           </aside>
 

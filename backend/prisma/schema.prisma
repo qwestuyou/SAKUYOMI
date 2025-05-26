@@ -21,9 +21,12 @@ model Product {
 
 model Category {
   id       Int       @id @default(autoincrement())
-  name     String
+  name     String?    @unique
+  slug     String    @unique
+  image    String
   products Product[]
 }
+
 
 model User {
   id        Int      @id @default(autoincrement())
