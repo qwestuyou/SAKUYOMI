@@ -17,12 +17,26 @@ model Product {
   category    Category @relation(fields: [categoryId], references: [id])
   orderItems  OrderItem[]
   reviews     Review[]
+
+  // Для фильтров:
+  anime       String?    // Название аниме (например, Naruto)
+  size        String?    // Размер (S, M, L, XL и т.д.)
+  material    String?    // Материал (хлопок, полиэстер, винил и т.п.)
+  language    String?    // Язык (английский, японский, украинский)
+  brand       String?    // Бренд или производитель
+  productType String?    // Тип товара (фигурка, футболка, постер и т.п.)
+  rating      Float?     // Средний рейтинг (например, 4.5)
+  inStock     Boolean     @default(true)    // Наличие на складе
+  color       String?    // Цвет (если актуально)
+  gender      String?    // Для одежды — "male", "female", "unisex"
+  ageRating   String?    // Возрастные ограничения (например, "13+", "18+")
+  features    String?    // Дополнительные характеристики, можно хранить как JSON или строку
 }
 
 model Category {
   id       Int       @id @default(autoincrement())
   name     String?    @unique
-  slug     String    @unique
+  slug     String     @unique
   image    String
   products Product[]
 }
