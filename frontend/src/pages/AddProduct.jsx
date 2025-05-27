@@ -1,5 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function AddProduct() {
   const [formData, setFormData] = useState({
@@ -82,8 +84,8 @@ export default function AddProduct() {
 
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow rounded mt-10">
-      <h2 className="text-2xl font-bold mb-4">Add product</h2>
+    <div className="max-w-xl mx-auto p-6 bg-white shadow rounded mt-15">
+      <h2 className="text-2xl font-bold mb-5">Add product</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input type="text" name="name" placeholder="Назва" className="w-full p-2 border" onChange={handleChange} required />
         <textarea name="description" placeholder="Опис" className="w-full p-2 border" onChange={handleChange} required />
