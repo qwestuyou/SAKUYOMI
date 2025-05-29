@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
+import { motion, AnimatePresence } from "framer-motion";
 
 const GlowingImage = ({ src, alt, glowColor }) => {
     const [glow, setGlow] = useState(false);
@@ -50,18 +51,59 @@ export default function CategoriesSection() {
 
     return (
         <section
-            className={`px-4 sm:px-8 md:px-12 lg:px-20 py-12 md:py-16 lg:py-20 transition-colors duration-300 ${categoriesStyles.bgSection}`}
+            className={`relative px-4 sm:px-8 md:px-12 lg:px-20 py-12 md:py-16 lg:py-20 transition-colors duration-300 overflow-hidden ${categoriesStyles.bgSection}`}
         >
+            {/* Фоновая анимация частиц */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                {Array.from({ length: 15 }).map((_, i) => (
+                    <motion.div
+                        key={i}
+                        className="absolute w-2 h-2 rounded-full bg-pink-300 blur-sm opacity-50"
+                        style={{
+                            left: `${Math.random() * 100}%`,
+                            top: `-${Math.random() * 20 + 10}%`,
+                        }}
+                        animate={{
+                            y: "110vh",
+                            x: ["0vw", "10vw", "-10vw", "0vw"],
+                            opacity: [0.5, 0.7, 0],
+                        }}
+                        transition={{
+                            duration: 12 + Math.random() * 6,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: i * 0.5,
+                        }}
+                    />
+                ))}
+            </div>
+
             <h2
-                className={`text-3xl md:text-4xl font-extrabold text-center mb-12 transition-colors duration-300 ${categoriesStyles.textColor}`}
+                className={`relative z-10 text-3xl md:text-4xl font-extrabold text-center mb-12 transition-colors duration-300 ${categoriesStyles.textColor}`}
             >
                 Shop Categories
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+            <motion.div
+                className="relative z-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                    visible: {
+                        transition: {
+                            staggerChildren: 0.15,
+                        },
+                    },
+                }}
+            >
                 {categories.map((category) => (
-                    <div
+                    <motion.div
                         key={category.id}
+                        variants={{
+                            hidden: { opacity: 0, y: 40, scale: 0.95 },
+                            visible: { opacity: 1, y: 0, scale: 1 },
+                        }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
                         className={`${categoriesStyles.cardBg} p-6 rounded-3xl shadow-lg flex flex-col items-center hover:shadow-xl transition-all duration-500 hover:-translate-y-2`}
                     >
                         <GlowingImage
@@ -80,11 +122,11 @@ export default function CategoriesSection() {
                         >
                             View all
                         </a>
-                    </div>
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
 
-            <div className="text-center mt-14">
+            <div className="relative z-10 text-center mt-14">
                 <a
                     href="/catalog"
                     className={`inline-block text-white font-semibold px-10 py-3.5 rounded-lg shadow-lg hover:shadow-xl transition-all duration-500 hover:scale-105 ${categoriesStyles.buttonBase}`}
