@@ -44,49 +44,9 @@ export default function Header() {
             {theme === "dark" ? <Sun className="text-yellow-300" /> : <Moon className="text-[#f59c9e]" />}
           </button>
 
-          {/* Search */}
-          <div className="relative">
-            <input
-                type="text"
-                placeholder="Search products..."
-                className={`px-20 py-2 pl-10 rounded-xl border border-[#c97476] focus:outline-none focus:ring-2 focus:ring-[#f8c1c1] ${
-                    theme === "dark" ? "bg-[#2a2a2a] text-white placeholder-gray-400" : "bg-white text-black"
-                }`}
-            />
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#c97476]"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-            >
-              <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-
-          {/* Cart */}
-          <button className="text-xl mb-2 md:mb-0 nav-button" aria-label="Cart">
-            🛒
-          </button>
-
           {/* Auth Buttons */}
           {user ? (
               <>
-                <Link
-                    to="/add-product"
-                    className={`px-5 py-2 rounded-full text-sm mb-2 md:mb-0 transition-colors duration-300 nav-button ${
-                        theme === "dark"
-                            ? "bg-[#9b5f5f] text-white hover:bg-[#b87575]"
-                            : "bg-[#f59c9e] text-white hover:bg-[#e0bcbc]"
-                    }`}
-                >
-                  Add Product
-                </Link>
                 <div className="relative group">
                   <img
                       src={

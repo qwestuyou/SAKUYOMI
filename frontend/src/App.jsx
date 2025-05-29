@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Catalog from "./pages/Catalog";
 import ProductDetails from './pages/ProductDetails';
 import Profile from "./pages/Profile";
+import CartIcon from './components/CartIcon';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
+        <CartIcon />
       </Router>
     </div>
   );
