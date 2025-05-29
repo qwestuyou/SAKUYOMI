@@ -6,13 +6,12 @@ import UserReviews from "../components/UserReviews";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { FaPen, FaSignOutAlt } from "react-icons/fa";
-import { Link } from "react-router-dom";
 
 export default function Profile() {
   const { user, setUser, logout } = useAuth();
   const { theme } = useTheme();
 
-  const [selectedTab, setSelectedTab] = useState("profile");
+  const [selectedTab, setSelectedTab] = useState("editProfile");
   const [preview, setPreview] = useState(user?.avatar || "");
   const [selectedFile, setSelectedFile] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -41,7 +40,6 @@ export default function Profile() {
   const sectionBg = theme === "dark" ? "bg-[#333] text-gray-100" : "bg-[#fff0f2] text-gray-800";
   const reviewCardBg = theme === "dark" ? "bg-[#3a3a3a] border-[#555] text-gray-100" : "bg-[#fff6f4] border-[#fcd5d5] text-gray-700";
 
-  // Функция смены таба
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
   };
@@ -106,25 +104,18 @@ export default function Profile() {
             <div className="text-center">
               <p className="font-semibold text-lg text-[#f59c9e] truncate max-w-[200px]">{user.name}</p>
               <p className="text-sm text-gray-400 truncate max-w-[200px]">{user.email}</p>
+              <p className="text-sm text-gray-400 truncate max-w-[200px]">{new Date(user.createdAt).toLocaleDateString()}</p>
             </div>
           </div>
 
           {/* Меню */}
-          <button
-            onClick={() => handleTabClick("profile")}
-            className={`text-left px-4 py-2 rounded-lg font-semibold transition ${
-              selectedTab === "profile" ? "bg-[#f59c9e] text-white" : "hover:bg-pink-100 dark:hover:bg-pink-800"
-            }`}
-          >
-            Профиль
-          </button>
           <button
             onClick={() => handleTabClick("editProfile")}
             className={`text-left px-4 py-2 rounded-lg font-semibold transition ${
               selectedTab === "editProfile" ? "bg-[#f59c9e] text-white" : "hover:bg-pink-100 dark:hover:bg-pink-800"
             }`}
           >
-            Редактировать профиль
+            Edit profile
           </button>
           <button
             onClick={() => handleTabClick("orders")}
@@ -132,7 +123,7 @@ export default function Profile() {
               selectedTab === "orders" ? "bg-[#f59c9e] text-white" : "hover:bg-pink-100 dark:hover:bg-pink-800"
             }`}
           >
-            Заказы
+            Orders
           </button>
           <button
             onClick={() => handleTabClick("wishlist")}
@@ -140,7 +131,7 @@ export default function Profile() {
               selectedTab === "wishlist" ? "bg-[#f59c9e] text-white" : "hover:bg-pink-100 dark:hover:bg-pink-800"
             }`}
           >
-            Вишлист
+            Wishlist
           </button>
           <button
             onClick={() => handleTabClick("reviews")}
@@ -148,13 +139,13 @@ export default function Profile() {
               selectedTab === "reviews" ? "bg-[#f59c9e] text-white" : "hover:bg-pink-100 dark:hover:bg-pink-800"
             }`}
           >
-            Отзывы
+            Reviews
           </button>
           <button
             onClick={logout}
             className="text-left px-4 py-2 rounded-lg font-semibold bg-red-600 text-white hover:bg-red-700 transition mt-4"
           >
-            Выйти
+            Sign Out
           </button>
         </nav>
 
@@ -163,9 +154,9 @@ export default function Profile() {
           className="flex-1 rounded-3xl p-6 shadow-xl transition-colors duration-300"
           style={{ backgroundColor: theme === "dark" ? "#2b2b2b" : "#fff" }}
         >
-          {selectedTab === "profile" && (
+          {selectedTab === "editProfile" && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-[#f59c9e]">Профиль</h2>
+              <h2 className="text-2xl font-bold text-[#f59c9e]">Edit profile</h2>
               <div className="flex flex-col md:flex-row items-center gap-8">
 
                 <div className="relative w-32 h-32 group">
@@ -198,16 +189,10 @@ export default function Profile() {
                 </div>
 
                 <div className="flex-1 space-y-2">
-                  <div className="text-lg">
-                    <span className="font-semibold text-[#f59c9e]">Name:</span> {user.name}
-                  </div>
-                  <div className="text-lg">
-                    <span className="font-semibold text-[#f59c9e]">Email:</span> {user.email}
-                  </div>
-                  <div className="text-lg">
-                    <span className="font-semibold text-[#f59c9e]">Member since:</span>{" "}
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </div>
+                  <p className="text-lg"><span className="font-semibold text-[#f59c9e]">Name:</span> {user.name}</p>
+                  <p className="text-lg"><span className="font-semibold text-[#f59c9e]">Email:</span> {user.email}</p>
+                  <p className="text-lg"><span className="font-semibold text-[#f59c9e]">Member since:</span>{" "}{new Date(user.createdAt).toLocaleDateString()}</p>
+
                   {selectedFile && (
                     <div className="flex gap-4 mt-4">
                       <button
@@ -229,13 +214,6 @@ export default function Profile() {
                   )}
                 </div>
               </div>
-            </div>
-          )}
-
-          {selectedTab === "editProfile" && (
-            <div>
-              <h2 className="text-2xl font-bold text-[#f59c9e]">Редактировать профиль</h2>
-              {/* Тут форма редактирования профиля, можешь потом вынести в отдельный компонент */}
             </div>
           )}
 
