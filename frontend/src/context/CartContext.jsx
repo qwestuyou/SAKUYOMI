@@ -21,7 +21,7 @@ export function CartProvider({ children }) {
       const index = prev.findIndex(item => item.id === product.id);
       if (index !== -1) {
         const newCart = [...prev];
-        newCart[index].quantity += quantity;
+        newCart[index] = { ...newCart[index], quantity: newCart[index].quantity + quantity };
         return newCart;
       }
       return [...prev, { ...product, quantity }];
@@ -38,7 +38,7 @@ export function CartProvider({ children }) {
       const newCart = [...prev];
       const index = newCart.findIndex(item => item.id === productId);
       if (index !== -1) {
-        newCart[index].quantity = quantity;
+        newCart[index] = { ...newCart[index], quantity };
       }
       return newCart;
     });

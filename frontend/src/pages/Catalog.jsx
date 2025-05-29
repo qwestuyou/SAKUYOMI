@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useTheme } from "../context/ThemeContext";
 import { FaRegHeart, FaHeart, FaShoppingCart } from "react-icons/fa";
+import { useCart } from "../context/CartContext";
 
 export default function Catalog() {
   const { theme } = useTheme();
@@ -12,18 +13,11 @@ export default function Catalog() {
   const category = params.get("category");
   const currentCategory = category?.toLowerCase() || "all";
 
+  const { addToCart } = useCart();
+
   const [wishlist, setWishlist] = useState(() => {
     try {
       const saved = localStorage.getItem("wishlist");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [cart, setCart] = useState(() => {
-    try {
-      const saved = localStorage.getItem("cart");
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -48,10 +42,6 @@ export default function Catalog() {
   useEffect(() => {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
   }, [wishlist]);
-
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/categories")
@@ -134,14 +124,6 @@ export default function Catalog() {
     setWishlist(prev =>
         prev.includes(productId)
             ? prev.filter(id => id !== productId)
-            : [...prev, productId]
-    );
-  }
-
-  function addToCart(productId) {
-    setCart(prev =>
-        prev.includes(productId)
-            ? prev
             : [...prev, productId]
     );
   }
@@ -370,22 +352,18 @@ export default function Catalog() {
                         <p className={`font-bold ${headingColor} text-xl leading-none`}>
                           {product.price} ₴
                         </p>
-                        <button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              addToCart(product.id);
-                            }}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm shadow-md border border-white/30 backdrop-blur-md transition-all duration-300 hover:shadow-lg hover:-translate-y-[1px] hover:scale-105 active:scale-95 ${
-                                theme === "dark"
-                                    ? "text-white bg-[#9b5f5f] hover:bg-[#d87c7e]"
-                                    : "text-white bg-[#f59c9e] hover:bg-[#e88c8e]"
-                            }`}
-                            aria-label="Add to cart"
-                            title="Add to cart"
-                        >
-                          <FaShoppingCart className="text-base" />
-                          <span>Add to cart</span>
-                        </button>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                addToCart(product);
+                              }}
+                              className="flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm shadow-md border border-white/30 backdrop-blur-md transition-all duration-300 hover:shadow-lg hover:-translate-y-[1px] hover:scale-105 active:scale-95"
+                              aria-label="Add to cart"
+                              title="Add to cart"
+                            >
+                              <FaShoppingCart className="text-base" />
+                              <span>Add to cart</span>
+                            </button>
                       </div>
                     </div>
                   </Link>

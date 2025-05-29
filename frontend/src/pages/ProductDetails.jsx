@@ -109,7 +109,10 @@ export default function ProductDetails() {
                     <h1 className="text-4xl font-bold text-[#f59c9e] mb-4">{product.name}</h1>
                     <p className={`mb-4 ${subText}`}>{product.description}</p>
                     <p className="text-2xl text-[#c97476] font-bold mb-6">{product.price} ₴</p>
-                    <button className="bg-[#f59c9e] text-white px-6 py-3 rounded-xl hover:bg-[#e0bcbc] transition">
+                    <button
+                        onClick={() => addToCart(product)}
+                        className="bg-pink-500 text-white py-3 px-6 rounded hover:bg-pink-600"
+                    >
                         Add to Cart
                     </button>
                 </div>
