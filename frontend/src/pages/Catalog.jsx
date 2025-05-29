@@ -12,7 +12,14 @@ export default function Catalog() {
   const category = params.get("category");
   const currentCategory = category?.toLowerCase() || "all";
 
-  const [wishlist, setWishlist] = useState({});
+  const [wishlist, setWishlist] = useState(() => {
+    try {
+      const saved = localStorage.getItem("wishlist");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -26,6 +33,10 @@ export default function Catalog() {
   const [colorFilter, setColorFilter] = useState("");
   const [ageRatingFilter, setAgeRatingFilter] = useState("");
   const [featuresFilter, setFeaturesFilter] = useState([]);
+
+  useEffect(() => {
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  }, [wishlist]);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/categories")
@@ -91,11 +102,12 @@ export default function Catalog() {
   const linkActive = theme === "dark" ? "bg-[#9b5f5f] text-white" : "bg-[#f59c9e] text-white";
   const linkHover = theme === "dark" ? "hover:bg-[#242424]" : "hover:bg-[#feeae6]";
 
-  function toggleWishlist(id) {
-    setWishlist(prev => {
-      const newState = {...prev, [id]: !prev[id]};
-      return newState;
-    });
+  function toggleWishlist(productId) {
+    setWishlist(prev =>
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
   }
 
   return (

@@ -19,7 +19,26 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { name, description, price, image, categoryId } = req.body;
+    const {
+      name,
+      description,
+      price,
+      image,
+      categoryId,
+      anime,
+      size,
+      material,
+      language,
+      brand,
+      productType,
+      rating,
+      inStock,
+      color,
+      gender,
+      ageRating,
+      features,
+    } = req.body;
+
     const product = await prisma.product.create({
       data: {
         name,
@@ -27,18 +46,32 @@ router.post("/", async (req, res) => {
         price: parseFloat(price),
         image,
         categoryId: parseInt(categoryId),
+        anime: anime || null,
+        size: size || null,
+        material: material || null,
+        language: language || null,
+        brand: brand || null,
+        productType: productType || null,
+        rating: rating ? parseFloat(rating) : null,
+        inStock: typeof inStock === "boolean" ? inStock : true,
+        color: color || null,
+        gender: gender || null,
+        ageRating: ageRating || null,
+        features: features || null,
       },
     });
+
     res.status(201).json(product);
   } catch (error) {
     console.error("POST / Error:", error);
     res.status(500).json({
       error: "Error creating product",
       message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined
+      stack: error instanceof Error ? error.stack : undefined,
     });
   }
 });
+
 
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
