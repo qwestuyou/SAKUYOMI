@@ -14,6 +14,7 @@
     "seed": "node backend/prisma/seed.js"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.4",
     "@prisma/client": "^6.6.0",
     "@tailwindcss/vite": "^4.1.7",
     "axios": "^1.8.4",
