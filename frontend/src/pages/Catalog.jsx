@@ -21,6 +21,15 @@ export default function Catalog() {
     }
   });
 
+  const [cart, setCart] = useState(() => {
+    try {
+      const saved = localStorage.getItem("cart");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 10000]);
@@ -39,27 +48,31 @@ export default function Catalog() {
   }, [wishlist]);
 
   useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
+  useEffect(() => {
     fetch("http://localhost:5000/api/categories")
-      .then(res => res.json())
-      .then(data => {
-        setCategories(data);
-      })
-      .catch(console.error);
+        .then(res => res.json())
+        .then(data => {
+          setCategories(data);
+        })
+        .catch(console.error);
   }, []);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/products")
-      .then(res => res.json())
-      .then(data => {
-        if (category && category.toLowerCase() !== "all") {
-          setProducts(
-            data.filter(p => p.category?.slug === category.toLowerCase())
-          );
-        } else {
-          setProducts(data);
-        }
-      })
-      .catch(console.error);
+        .then(res => res.json())
+        .then(data => {
+          if (category && category.toLowerCase() !== "all") {
+            setProducts(
+                data.filter(p => p.category?.slug === category.toLowerCase())
+            );
+          } else {
+            setProducts(data);
+          }
+        })
+        .catch(console.error);
   }, [category]);
 
   useEffect(() => {
@@ -86,14 +99,14 @@ export default function Catalog() {
     if (colorFilter && product.color !== colorFilter) return false;
     if (ageRatingFilter && product.ageRating !== ageRatingFilter) return false;
     if (
-      featuresFilter.length > 0 &&
-      (!product.features || !featuresFilter.every(f => product.features.includes(f)))
+        featuresFilter.length > 0 &&
+        (!product.features || !featuresFilter.every(f => product.features.includes(f)))
     )
       return false;
     return true;
   });
 
-  // Тема
+  // Theme styles
   const pageBg = theme === "dark" ? "bg-[#1a1a1a] text-gray-200" : "bg-[#fff6f4] text-gray-800";
   const sidebarBg = theme === "dark" ? "bg-[#2b2b2b]" : "bg-white";
   const mainBg = theme === "dark" ? "bg-[#2b2b2b]" : "bg-white";
@@ -101,12 +114,24 @@ export default function Catalog() {
   const headingColor = theme === "dark" ? "text-[#ffffff]" : "text-[#f59c9e]";
   const linkActive = theme === "dark" ? "bg-[#9b5f5f] text-white" : "bg-[#f59c9e] text-white";
   const linkHover = theme === "dark" ? "hover:bg-[#242424]" : "hover:bg-[#feeae6]";
+  // Wishlist button styles
+  const wishlistButtonBg = theme === "dark" ? "bg-gray-800/90" : "bg-gray-200/90";
+  const wishlistButtonBorder = theme === "dark" ? "border-gray-600" : "border-gray-300";
+  const wishlistEmptyHeartColor = theme === "dark" ? "text-gray-300" : "text-gray-700";
 
   function toggleWishlist(productId) {
     setWishlist(prev =>
-      prev.includes(productId)
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
+        prev.includes(productId)
+            ? prev.filter(id => id !== productId)
+            : [...prev, productId]
+    );
+  }
+
+  function addToCart(productId) {
+    setCart(prev =>
+        prev.includes(productId)
+            ? prev
+            : [...prev, productId]
     );
   }
 
@@ -119,31 +144,31 @@ export default function Catalog() {
           <aside className="w-full md:w-1/4">
             <div className={`${sidebarBg} p-4 rounded-2xl shadow-md transition-colors duration-300`}>
               <h2 className={`text-xl font-bold mb-4 ${headingColor}`}>Categories</h2>
-                <ul className="space-y-2">
-                  <li>
-                    <Link
+              <ul className="space-y-2">
+                <li>
+                  <Link
                       to="/catalog"
                       className={`block p-2 rounded-xl transition ${currentCategory === "all" ? linkActive : linkHover}`}
-                    >
-                      All
-                    </Link>
-                  </li>
-                  {categories.map(cat => {
-                    const isActive = currentCategory === cat.slug;
-                    return (
+                  >
+                    All
+                  </Link>
+                </li>
+                {categories.map(cat => {
+                  const isActive = currentCategory === cat.slug;
+                  return (
                       <li key={cat.id}>
                         <Link
-                          to={`/catalog?category=${cat.slug}`}
-                          className={`block p-2 rounded-xl transition ${isActive ? linkActive : linkHover}`}
+                            to={`/catalog?category=${cat.slug}`}
+                            className={`block p-2 rounded-xl transition ${isActive ? linkActive : linkHover}`}
                         >
                           {cat.name}
                         </Link>
                       </li>
-                    );
-                  })}
-                </ul>
+                  );
+                })}
+              </ul>
             </div>
-            
+
             <div className={`${mainBg} p-4 rounded-2xl shadow-md transition-colors duration-300 mt-10`}>
               <h2 className={`text-lg font-bold mb-2 ${headingColor}`}>Filters</h2>
               <div className="flex flex-col gap-4">
@@ -152,13 +177,13 @@ export default function Catalog() {
                 <div>
                   <label className="block mb-1 font-semibold">Price Range (₴)</label>
                   <input
-                    type="range"
-                    min="0"
-                    max="10000"
-                    step="100"
-                    value={priceRange[1]}
-                    onChange={e => setPriceRange([0, +e.target.value])}
-                    className="w-full"
+                      type="range"
+                      min="0"
+                      max="10000"
+                      step="100"
+                      value={priceRange[1]}
+                      onChange={e => setPriceRange([0, +e.target.value])}
+                      className="w-full"
                   />
                   <div className="flex justify-between text-sm opacity-70">
                     <span>0 ₴</span>
@@ -168,51 +193,50 @@ export default function Catalog() {
 
                 {/* Размер (только для одежды) */}
                 {currentCategory === "clothing" && (
-                  <div>
-                    <label className="block mb-1 font-semibold">Size</label>
-                    <select
-                      value={sizeFilter}
-                      onChange={e => setSizeFilter(e.target.value)}
-                      className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
-                    >
-                      <option value="">All</option>
-                      <option value="S">S</option>
-                      <option value="M">M</option>
-                      <option value="L">L</option>
-                    </select>
-                  </div>
+                    <div>
+                      <label className="block mb-1 font-semibold">Size</label>
+                      <select
+                          value={sizeFilter}
+                          onChange={e => setSizeFilter(e.target.value)}
+                          className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
+                      >
+                        <option value="">All</option>
+                        <option value="S">S</option>
+                        <option value="M">M</option>
+                        <option value="L">L</option>
+                      </select>
+                    </div>
                 )}
 
                 {/* Язык (только для манги) */}
                 {currentCategory === "manga" && (
-                  <div>
-                    <label className="block mb-1 font-semibold">Language</label>
-                    <select
-                      value={languageFilter}
-                      onChange={e => setLanguageFilter(e.target.value)}
-                      className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
-                    >
-                      <option value="">All</option>
-                      <option value="Japanese">Japanese</option>
-                      <option value="English">English</option>
-                      <option value="Ukrainian">Ukrainian</option>
-                    </select>
-                  </div>
+                    <div>
+                      <label className="block mb-1 font-semibold">Language</label>
+                      <select
+                          value={languageFilter}
+                          onChange={e => setLanguageFilter(e.target.value)}
+                          className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
+                      >
+                        <option value="">All</option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="English">English</option>
+                        <option value="Ukrainian">Ukrainian</option>
+                      </select>
+                    </div>
                 )}
 
                 {/* Материал */}
                 <div>
                   <label className="block mb-1 font-semibold">Material</label>
                   <select
-                    value={materialFilter}
-                    onChange={e => setMaterialFilter(e.target.value)}
-                    className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
+                      value={materialFilter}
+                      onChange={e => setMaterialFilter(e.target.value)}
+                      className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
                   >
                     <option value="">All</option>
                     <option value="Cotton">Cotton</option>
                     <option value="Polyester">Polyester</option>
                     <option value="Vinyl">Vinyl</option>
-                    {/* Добавляй по своему списку */}
                   </select>
                 </div>
 
@@ -220,15 +244,14 @@ export default function Catalog() {
                 <div>
                   <label className="block mb-1 font-semibold">Brand</label>
                   <select
-                    value={brandFilter}
-                    onChange={e => setBrandFilter(e.target.value)}
-                    className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
+                      value={brandFilter}
+                      onChange={e => setBrandFilter(e.target.value)}
+                      className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
                   >
                     <option value="">All</option>
                     <option value="Bandai">Bandai</option>
                     <option value="Good Smile">Good Smile</option>
                     <option value="Funko">Funko</option>
-                    {/* Добавляй по своему списку */}
                   </select>
                 </div>
 
@@ -236,9 +259,9 @@ export default function Catalog() {
                 <div>
                   <label className="block mb-1 font-semibold">Minimum Rating</label>
                   <select
-                    value={ratingFilter}
-                    onChange={e => setRatingFilter(Number(e.target.value))}
-                    className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
+                      value={ratingFilter}
+                      onChange={e => setRatingFilter(Number(e.target.value))}
+                      className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
                   >
                     <option value={0}>All</option>
                     <option value={1}>1 star & up</option>
@@ -252,13 +275,13 @@ export default function Catalog() {
                 <div>
                   <label className="block mb-1 font-semibold">In Stock</label>
                   <select
-                    value={inStockFilter === null ? "" : inStockFilter ? "true" : "false"}
-                    onChange={e => {
-                      const val = e.target.value;
-                      if (val === "") setInStockFilter(null);
-                      else setInStockFilter(val === "true");
-                    }}
-                    className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
+                      value={inStockFilter === null ? "" : inStockFilter ? "true" : "false"}
+                      onChange={e => {
+                        const val = e.target.value;
+                        if (val === "") setInStockFilter(null);
+                        else setInStockFilter(val === "true");
+                      }}
+                      className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
                   >
                     <option value="">All</option>
                     <option value="true">In Stock</option>
@@ -269,24 +292,23 @@ export default function Catalog() {
                 <div>
                   <label className="block mb-1 font-semibold">Color</label>
                   <select
-                    value={colorFilter}
-                    onChange={e => setColorFilter(e.target.value)}
-                    className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
+                      value={colorFilter}
+                      onChange={e => setColorFilter(e.target.value)}
+                      className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
                   >
                     <option value="">All</option>
                     <option value="Red">Red</option>
                     <option value="Blue">Blue</option>
                     <option value="Black">Black</option>
-                    {/* Добавляй по своему списку */}
                   </select>
                 </div>
                 {/* Возрастные ограничения */}
                 <div>
                   <label className="block mb-1 font-semibold">Age Rating</label>
                   <select
-                    value={ageRatingFilter}
-                    onChange={e => setAgeRatingFilter(e.target.value)}
-                    className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
+                      value={ageRatingFilter}
+                      onChange={e => setAgeRatingFilter(e.target.value)}
+                      className="w-full border rounded p-2 bg-inherit text-inherit transition-colors duration-300"
                   >
                     <option value="">All</option>
                     <option value="13+">13+</option>
@@ -297,21 +319,21 @@ export default function Catalog() {
                 <div>
                   <label className="block mb-1 font-semibold">Features</label>
                   {["Glowing", "Sound", "Limited Edition"].map(feature => (
-                    <label key={feature} className="inline-flex items-center mr-4">
-                      <input
-                        type="checkbox"
-                        checked={featuresFilter.includes(feature)}
-                        onChange={() => {
-                          setFeaturesFilter(prev =>
-                            prev.includes(feature)
-                              ? prev.filter(f => f !== feature)
-                              : [...prev, feature]
-                          );
-                        }}
-                        className="mr-1"
-                      />
-                      {feature}
-                    </label>
+                      <label key={feature} className="inline-flex items-center mr-4">
+                        <input
+                            type="checkbox"
+                            checked={featuresFilter.includes(feature)}
+                            onChange={() => {
+                              setFeaturesFilter(prev =>
+                                  prev.includes(feature)
+                                      ? prev.filter(f => f !== feature)
+                                      : [...prev, feature]
+                              );
+                            }}
+                            className="mr-1"
+                        />
+                        {feature}
+                      </label>
                   ))}
                 </div>
               </div>
@@ -320,67 +342,65 @@ export default function Catalog() {
 
           <main className="flex-1 space-y-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map(product => (
-                    <Link
-                        to={`/product/${product.id}`}
-                        key={product.id}
-                        className={`${cardBg} relative rounded-3xl backdrop-blur-xl bg-white/10 dark:bg-white/5 border border-white/10 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-[1.01] transition-all duration-300 overflow-hidden p-5 flex flex-col`}
-                    >
-                      <div className="relative mb-4">
-                        <img
-                            src={product.image}
-                            alt={product.name}
-                            className="rounded-xl w-full h-60 object-cover"
-                        />
+              {filteredProducts.map(product => (
+                  <Link
+                      to={`/product/${product.id}`}
+                      key={product.id}
+                      className={`${cardBg} relative rounded-3xl backdrop-blur-xl bg-white/10 dark:bg-white/5 border border-white/10 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-[1.01] transition-all duration-300 overflow-hidden p-5 flex flex-col`}
+                  >
+                    <div className="relative mb-4">
+                      <img
+                          src={product.image}
+                          alt={product.name}
+                          className="rounded-xl w-full h-60 object-cover"
+                      />
+                      <button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            toggleWishlist(product.id);
+                          }}
+                          className={`absolute top-3 right-3 text-2xl ${wishlistButtonBg} ${wishlistButtonBorder} p-2 rounded-full shadow-md hover:scale-110 transition-transform duration-300 border`}
+                          aria-label={wishlist.includes(product.id) ? "Remove from wishlist" : "Add to wishlist"}
+                          title={wishlist.includes(product.id) ? "Remove from wishlist" : "Add to wishlist"}
+                      >
+                        {wishlist.includes(product.id) ? (
+                            <FaHeart className="text-red-500" />
+                        ) : (
+                            <FaRegHeart className={`${wishlistEmptyHeartColor} hover:text-red-400 transition-colors`} />
+                        )}
+                      </button>
+                    </div>
 
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div className="mb-4">
+                        <h3 className="text-lg font-semibold mb-1 truncate">{product.name}</h3>
+                        <p className="text-sm opacity-70 line-clamp-2">{product.description}</p>
+                      </div>
+
+                      <div className="flex items-center justify-between mt-auto">
+                        <p className={`font-bold ${headingColor} text-xl leading-none`}>
+                          {product.price} ₴
+                        </p>
                         <button
                             onClick={(e) => {
                               e.preventDefault();
-                              toggleWishlist(product.id);
+                              addToCart(product.id);
                             }}
-                            className="absolute top-3 right-3 text-2xl bg-white/20 backdrop-blur-sm p-2 rounded-full shadow-md hover:scale-110 transition-transform duration-300"
-                            aria-label={wishlist[product.id] ? "Remove from wishlist" : "Add to wishlist"}
-                            title={wishlist[product.id] ? "Remove from wishlist" : "Add to wishlist"}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm shadow-md border border-white/30 backdrop-blur-md transition-all duration-300 hover:shadow-lg hover:-translate-y-[1px] hover:scale-105 active:scale-95 ${
+                                theme === "dark"
+                                    ? "text-white bg-[#9b5f5f] hover:bg-[#d87c7e]"
+                                    : "text-white bg-[#f59c9e] hover:bg-[#e88c8e]"
+                            }`}
+                            aria-label="Add to cart"
+                            title="Add to cart"
                         >
-                          {wishlist[product.id] ? (
-                              <FaHeart className="text-red-500" />
-                          ) : (
-                              <FaRegHeart className="text-white hover:text-red-400 transition-colors" />
-                          )}
+                          <FaShoppingCart className="text-base" />
+                          <span>Add to cart</span>
                         </button>
                       </div>
-
-                      <div className="flex-1 flex flex-col justify-between">
-                        <div className="mb-4">
-                          <h3 className="text-lg font-semibold mb-1 truncate">{product.name}</h3>
-                          <p className="text-sm opacity-70 line-clamp-2">{product.description}</p>
-                        </div>
-
-                        <div className="flex items-center justify-between mt-auto">
-                          <p className={`font-bold ${headingColor} text-xl leading-none`}>
-                            {product.price} ₴
-                          </p>
-
-                          <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                addToCart(product.id);
-                              }}
-                              className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm shadow-md border border-white/30 backdrop-blur-md transition-all duration-300 hover:shadow-lg hover:-translate-y-[1px] hover:scale-105 active:scale-95 ${
-                                  theme === "dark"
-                                      ? "text-white bg-[#9b5f5f] hover:bg-[#d87c7e]"
-                                      : "text-white bg-[#f59c9e] hover:bg-[#e88c8e]"
-                              }`}
-                              aria-label="Add to cart"
-                              title="Add to cart"
-                          >
-                            <FaShoppingCart className="text-base" />
-                            <span>Add to card</span>
-                          </button>
-                        </div>
-                      </div>
-                    </Link>
-                ))}
+                    </div>
+                  </Link>
+              ))}
             </div>
           </main>
         </div>
