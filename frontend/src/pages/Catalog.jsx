@@ -42,6 +42,8 @@ export default function Catalog() {
   const [colorFilter, setColorFilter] = useState("");
   const [ageRatingFilter, setAgeRatingFilter] = useState("");
   const [featuresFilter, setFeaturesFilter] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 12;
 
   useEffect(() => {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
@@ -86,6 +88,7 @@ export default function Catalog() {
     setColorFilter("");
     setAgeRatingFilter("");
     setFeaturesFilter([]);
+    setCurrentPage(1);
   }, [currentCategory]);
 
   const filteredProducts = products.filter(product => {
@@ -106,7 +109,16 @@ export default function Catalog() {
     return true;
   });
 
-  // Theme styles
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const pageBg = theme === "dark" ? "bg-[#1a1a1a] text-gray-200" : "bg-[#fff6f4] text-gray-800";
   const sidebarBg = theme === "dark" ? "bg-[#2b2b2b]" : "bg-white";
   const mainBg = theme === "dark" ? "bg-[#2b2b2b]" : "bg-white";
@@ -114,7 +126,6 @@ export default function Catalog() {
   const headingColor = theme === "dark" ? "text-[#ffffff]" : "text-[#f59c9e]";
   const linkActive = theme === "dark" ? "bg-[#9b5f5f] text-white" : "bg-[#f59c9e] text-white";
   const linkHover = theme === "dark" ? "hover:bg-[#242424]" : "hover:bg-[#feeae6]";
-  // Wishlist button styles
   const wishlistButtonBg = theme === "dark" ? "bg-gray-800/90" : "bg-gray-200/90";
   const wishlistButtonBorder = theme === "dark" ? "border-gray-600" : "border-gray-300";
   const wishlistEmptyHeartColor = theme === "dark" ? "text-gray-300" : "text-gray-700";
@@ -138,9 +149,7 @@ export default function Catalog() {
   return (
       <div className={`${pageBg} min-h-screen transition-colors duration-300`}>
         <Header />
-
         <div className="p-6 max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
-          {/* Сайдбар */}
           <aside className="w-full md:w-1/4">
             <div className={`${sidebarBg} p-4 rounded-2xl shadow-md transition-colors duration-300`}>
               <h2 className={`text-xl font-bold mb-4 ${headingColor}`}>Categories</h2>
@@ -168,12 +177,9 @@ export default function Catalog() {
                 })}
               </ul>
             </div>
-
             <div className={`${mainBg} p-4 rounded-2xl shadow-md transition-colors duration-300 mt-10`}>
               <h2 className={`text-lg font-bold mb-2 ${headingColor}`}>Filters</h2>
               <div className="flex flex-col gap-4">
-
-                {/* Цена */}
                 <div>
                   <label className="block mb-1 font-semibold">Price Range (₴)</label>
                   <input
@@ -190,8 +196,6 @@ export default function Catalog() {
                     <span>{priceRange[1]} ₴</span>
                   </div>
                 </div>
-
-                {/* Размер (только для одежды) */}
                 {currentCategory === "clothing" && (
                     <div>
                       <label className="block mb-1 font-semibold">Size</label>
@@ -207,8 +211,6 @@ export default function Catalog() {
                       </select>
                     </div>
                 )}
-
-                {/* Язык (только для манги) */}
                 {currentCategory === "manga" && (
                     <div>
                       <label className="block mb-1 font-semibold">Language</label>
@@ -224,8 +226,6 @@ export default function Catalog() {
                       </select>
                     </div>
                 )}
-
-                {/* Материал */}
                 <div>
                   <label className="block mb-1 font-semibold">Material</label>
                   <select
@@ -239,8 +239,6 @@ export default function Catalog() {
                     <option value="Vinyl">Vinyl</option>
                   </select>
                 </div>
-
-                {/* Бренд */}
                 <div>
                   <label className="block mb-1 font-semibold">Brand</label>
                   <select
@@ -254,8 +252,6 @@ export default function Catalog() {
                     <option value="Funko">Funko</option>
                   </select>
                 </div>
-
-                {/* Рейтинг */}
                 <div>
                   <label className="block mb-1 font-semibold">Minimum Rating</label>
                   <select
@@ -271,7 +267,6 @@ export default function Catalog() {
                     <option value={5}>5 stars</option>
                   </select>
                 </div>
-                {/* Наличие */}
                 <div>
                   <label className="block mb-1 font-semibold">In Stock</label>
                   <select
@@ -288,7 +283,6 @@ export default function Catalog() {
                     <option value="false">Out of Stock</option>
                   </select>
                 </div>
-                {/* Цвет */}
                 <div>
                   <label className="block mb-1 font-semibold">Color</label>
                   <select
@@ -302,7 +296,6 @@ export default function Catalog() {
                     <option value="Black">Black</option>
                   </select>
                 </div>
-                {/* Возрастные ограничения */}
                 <div>
                   <label className="block mb-1 font-semibold">Age Rating</label>
                   <select
@@ -315,7 +308,6 @@ export default function Catalog() {
                     <option value="18+">18+</option>
                   </select>
                 </div>
-                {/* Фичи (чекбоксы) */}
                 <div>
                   <label className="block mb-1 font-semibold">Features</label>
                   {["Glowing", "Sound", "Limited Edition"].map(feature => (
@@ -339,20 +331,19 @@ export default function Catalog() {
               </div>
             </div>
           </aside>
-
           <main className="flex-1 space-y-8">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map(product => (
+              {currentProducts.map(product => (
                   <Link
                       to={`/product/${product.id}`}
                       key={product.id}
                       className={`${cardBg} relative rounded-3xl backdrop-blur-xl bg-white/10 dark:bg-white/5 border border-white/10 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-[1.01] transition-all duration-300 overflow-hidden p-5 flex flex-col`}
                   >
-                    <div className="relative mb-4">
+                    <div className="relative mb-4 flex justify-center">
                       <img
                           src={product.image}
                           alt={product.name}
-                          className="rounded-xl w-full h-60 object-cover"
+                          className="rounded-xl w-[300px] h-[300px] object-cover"
                       />
                       <button
                           onClick={(e) => {
@@ -370,13 +361,11 @@ export default function Catalog() {
                         )}
                       </button>
                     </div>
-
                     <div className="flex-1 flex flex-col justify-between">
                       <div className="mb-4">
                         <h3 className="text-lg font-semibold mb-1 truncate">{product.name}</h3>
                         <p className="text-sm opacity-70 line-clamp-2">{product.description}</p>
                       </div>
-
                       <div className="flex items-center justify-between mt-auto">
                         <p className={`font-bold ${headingColor} text-xl leading-none`}>
                           {product.price} ₴
@@ -402,6 +391,38 @@ export default function Catalog() {
                   </Link>
               ))}
             </div>
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-2 mt-6">
+                  <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 disabled:opacity-50"
+                      aria-label="Previous page"
+                  >
+                    Previous
+                  </button>
+                  {Array.from({ length: totalPages }, (_, index) => index + 1).map(page => (
+                      <button
+                          key={page}
+                          onClick={() => handlePageChange(page)}
+                          className={`px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 ${
+                              currentPage === page ? linkActive : linkHover
+                          }`}
+                          aria-label={`Page ${page}`}
+                      >
+                        {page}
+                      </button>
+                  ))}
+                  <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 disabled:opacity-50"
+                      aria-label="Next page"
+                  >
+                    Next
+                  </button>
+                </div>
+            )}
           </main>
         </div>
         <Footer />
