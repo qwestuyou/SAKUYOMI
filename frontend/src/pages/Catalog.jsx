@@ -8,7 +8,7 @@ import { useCart } from "../context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Catalog() {
-  const { theme } = useTheme();
+  const { theme, themeStyles } = useTheme();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const category = params.get("category");
@@ -112,27 +112,15 @@ export default function Catalog() {
     );
   };
 
-  const pageBg = theme === "dark" ? "bg-[#1a1a1a] text-gray-200" : "bg-[#fff6f4] text-gray-800";
-  const cardBg = theme === "dark" ? "bg-[#333] border-gray-600" : "bg-white border-pink-200";
-  const headingColor = theme === "dark" ? "text-[#ffffff]" : "text-[#f59c9e]";
-  const linkActive = theme === "dark" ? "bg-[#9b5f5f] text-white" : "bg-[#f59c9e] text-white";
-  const linkHover = theme === "dark" ? "hover:bg-[#242424] hover:text-gray-200" : "hover:bg-[#feeae6] hover:text-gray-800";
-  const wishlistButtonBg = theme === "dark" ? "bg-gray-800/90" : "bg-gray-200/90";
-  const wishlistButtonBorder = theme === "dark" ? "border-gray-600" : "border-gray-300";
-  const wishlistEmptyHeartColor = theme === "dark" ? "text-gray-300" : "text-gray-700";
-  const modalBg = theme === "dark" ? "bg-[#2b2b2b] text-gray-200" : "bg-white text-gray-800";
-  const modalBorder = theme === "dark" ? "border-gray-600" : "border-pink-200";
-  const inputBg = theme === "dark" ? "bg-gray-800/50 text-gray-200" : "bg-white/50 text-gray-800";
-  const inputBorder = theme === "dark" ? "border-gray-600" : "border-gray-300";
-  const featureTagBg = theme === "dark" ? "bg-gray-700" : "bg-pink-100";
+  const catalogStyles = themeStyles.catalog;
 
   return (
-      <div className={`${pageBg} min-h-screen transition-colors duration-300`}>
+      <div className={`${catalogStyles.pageBg} min-h-screen transition-colors duration-300`}>
         <Header />
         <div className="p-6 max-w-7xl mx-auto relative">
           {/* Header Block */}
           <motion.div
-              className={`${modalBg} backdrop-blur-lg rounded-2xl shadow-2xl p-4 mb-8 flex items-center justify-between sticky top-0 z-50 border ${modalBorder}`}
+              className={`${catalogStyles.modalBg} backdrop-blur-lg rounded-2xl shadow-2xl p-4 mb-8 flex items-center justify-between sticky top-0 z-50 border ${catalogStyles.modalBorder}`}
               initial={{ y: -50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
@@ -142,7 +130,7 @@ export default function Catalog() {
               <div className="relative">
                 <motion.button
                     onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
-                    className={`${linkActive} px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-all duration-300 hover:shadow-lg`}
+                    className={`${catalogStyles.pagination.active} px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-all duration-300 hover:shadow-lg`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -151,7 +139,7 @@ export default function Catalog() {
                 <AnimatePresence>
                   {isCategoriesOpen && (
                       <motion.div
-                          className={`fixed top-20 left-4 md:left-auto md:top-[120px] w-48 ${modalBg} rounded-xl shadow-2xl p-4 z-50 border ${modalBorder}`}
+                          className={`fixed top-20 left-4 md:left-auto md:top-[120px] w-48 ${catalogStyles.modalBg} rounded-xl shadow-2xl p-4 z-50 border ${catalogStyles.modalBorder}`}
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -161,7 +149,7 @@ export default function Catalog() {
                           <li>
                             <Link
                                 to="/catalog"
-                                className={`block p-2 rounded-lg ${currentCategory === "all" ? linkActive : linkHover}`}
+                                className={`block p-2 rounded-lg ${currentCategory === "all" ? catalogStyles.pagination.active : catalogStyles.pagination.hover}`}
                                 onClick={() => setIsCategoriesOpen(false)}
                             >
                               All
@@ -171,7 +159,7 @@ export default function Catalog() {
                               <li key={cat.id}>
                                 <Link
                                     to={`/catalog?category=${cat.slug}`}
-                                    className={`block p-2 rounded-lg ${currentCategory === cat.slug ? linkActive : linkHover}`}
+                                    className={`block p-2 rounded-lg ${currentCategory === cat.slug ? catalogStyles.pagination.active : catalogStyles.pagination.hover}`}
                                     onClick={() => setIsCategoriesOpen(false)}
                                 >
                                   {cat.name}
@@ -188,7 +176,7 @@ export default function Catalog() {
               <div className="relative">
                 <motion.button
                     onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-                    className={`${linkActive} px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-all duration-300 hover:shadow-lg`}
+                    className={`${catalogStyles.pagination.active} px-4 py-2 rounded-full font-semibold flex items-center gap-2 transition-all duration-300 hover:shadow-lg`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                 >
@@ -197,7 +185,7 @@ export default function Catalog() {
                 <AnimatePresence>
                   {isFiltersOpen && (
                       <motion.div
-                          className={`fixed top-20 left-0 right-0 mx-auto ${modalBg} rounded-xl shadow-2xl p-6 z-50 w-[90vw] max-w-4xl flex flex-wrap gap-6 border ${modalBorder}`}
+                          className={`fixed top-20 left-0 right-0 mx-auto ${catalogStyles.modalBg} rounded-xl shadow-2xl p-6 z-50 w-[90vw] max-w-4xl flex flex-wrap gap-6 border ${catalogStyles.modalBorder}`}
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
@@ -225,7 +213,7 @@ export default function Catalog() {
                               <select
                                   value={sizeFilter}
                                   onChange={e => setSizeFilter(e.target.value)}
-                                  className={`w-full border rounded-lg p-2 ${inputBg} ${inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
+                                  className={`w-full border rounded-lg p-2 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
                               >
                                 <option value="">All</option>
                                 <option value="S">S</option>
@@ -240,7 +228,7 @@ export default function Catalog() {
                               <select
                                   value={languageFilter}
                                   onChange={e => setLanguageFilter(e.target.value)}
-                                  className={`w-full border rounded-lg p-2 ${inputBg} ${inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
+                                  className={`w-full border rounded-lg p-2 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
                               >
                                 <option value="">All</option>
                                 <option value="Japanese">Japanese</option>
@@ -254,7 +242,7 @@ export default function Catalog() {
                           <select
                               value={materialFilter}
                               onChange={e => setMaterialFilter(e.target.value)}
-                              className={`w-full border rounded-lg p-2 ${inputBg} ${inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
+                              className={`w-full border rounded-lg p-2 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
                           >
                             <option value="">All</option>
                             <option value="Cotton">Cotton</option>
@@ -267,7 +255,7 @@ export default function Catalog() {
                           <select
                               value={brandFilter}
                               onChange={e => setBrandFilter(e.target.value)}
-                              className={`w-full border rounded-lg p-2 ${inputBg} ${inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
+                              className={`w-full border rounded-lg p-2 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
                           >
                             <option value="">All</option>
                             <option value="Bandai">Bandai</option>
@@ -280,7 +268,7 @@ export default function Catalog() {
                           <select
                               value={ratingFilter}
                               onChange={e => setRatingFilter(Number(e.target.value))}
-                              className={`w-full border rounded-lg p-2 ${inputBg} ${inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
+                              className={`w-full border rounded-lg p-2 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
                           >
                             <option value={0}>All</option>
                             <option value={1}>1 star & up</option>
@@ -299,7 +287,7 @@ export default function Catalog() {
                                 if (val === "") setInStockFilter(null);
                                 else setInStockFilter(val === "true");
                               }}
-                              className={`w-full border rounded-lg p-2 ${inputBg} ${inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
+                              className={`w-full border rounded-lg p-2 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
                           >
                             <option value="">All</option>
                             <option value="true">In Stock</option>
@@ -311,7 +299,7 @@ export default function Catalog() {
                           <select
                               value={colorFilter}
                               onChange={e => setColorFilter(e.target.value)}
-                              className={`w-full border rounded-lg p-2 ${inputBg} ${inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
+                              className={`w-full border rounded-lg p-2 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
                           >
                             <option value="">All</option>
                             <option value="Red">Red</option>
@@ -324,7 +312,7 @@ export default function Catalog() {
                           <select
                               value={ageRatingFilter}
                               onChange={e => setAgeRatingFilter(e.target.value)}
-                              className={`w-full border rounded-lg p-2 ${inputBg} ${inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
+                              className={`w-full border rounded-lg p-2 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} transition-colors duration-300 hover:border-[#f59c9e]`}
                           >
                             <option value="">All</option>
                             <option value="13+">13+</option>
@@ -337,7 +325,7 @@ export default function Catalog() {
                             {["Glowing", "Sound", "Limited Edition"].map(feature => (
                                 <motion.label
                                     key={feature}
-                                    className={`inline-flex items-center px-3 py-1 rounded-full ${featureTagBg} text-sm cursor-pointer`}
+                                    className={`inline-flex items-center px-3 py-1 rounded-full ${catalogStyles.featureTagBg} text-sm cursor-pointer`}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
@@ -369,7 +357,7 @@ export default function Catalog() {
               <input
                   type="text"
                   placeholder="Search products..."
-                  className={`w-full pl-10 pr-4 py-2 rounded-full border ${inputBorder} ${inputBg} focus:outline-none focus:border-[#f59c9e] transition-colors duration-300`}
+                  className={`w-full pl-10 pr-4 py-2 rounded-full border ${catalogStyles.inputBorder} ${catalogStyles.inputBg} focus:outline-none focus:border-[#f59c9e] transition-colors duration-300`}
                   disabled
               />
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -383,7 +371,7 @@ export default function Catalog() {
                     <Link
                         to={`/product/${product.id}`}
                         key={product.id}
-                        className={`${cardBg} relative rounded-3xl backdrop-blur-xl bg-white/10 dark:bg-white/5 border border-white/10 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-[1.01] transition-all duration-300 overflow-hidden p-5 flex flex-col`}
+                        className={`${catalogStyles.cardBg} relative rounded-3xl backdrop-blur-xl bg-white/10 dark:bg-white/5 border border-white/10 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 hover:scale-[1.01] transition-all duration-300 overflow-hidden p-5 flex flex-col`}
                     >
                       <div className="relative mb-4 flex justify-center">
                         <img
@@ -396,14 +384,14 @@ export default function Catalog() {
                               e.preventDefault();
                               toggleWishlist(product.id);
                             }}
-                            className={`absolute top-3 right-3 text-2xl ${wishlistButtonBg} ${wishlistButtonBorder} p-2 rounded-full shadow-md hover:scale-110 transition-transform duration-300 border`}
+                            className={`absolute top-3 right-3 text-2xl ${catalogStyles.wishlistBtnBg} ${catalogStyles.wishlistBtnBorder} p-2 rounded-full shadow-md hover:scale-110 transition-transform duration-300 border`}
                             aria-label={wishlist.includes(product.id) ? "Remove from wishlist" : "Add to wishlist"}
                             title={wishlist.includes(product.id) ? "Remove from wishlist" : "Add to wishlist"}
                         >
                           {wishlist.includes(product.id) ? (
                               <FaHeart className="text-red-500" />
                           ) : (
-                              <FaRegHeart className={`${wishlistEmptyHeartColor} hover:text-red-400 transition-colors`} />
+                              <FaRegHeart className={`${catalogStyles.wishlistEmptyHeartColor} hover:text-red-400 transition-colors`} />
                           )}
                         </button>
                       </div>
@@ -413,7 +401,7 @@ export default function Catalog() {
                           <p className="text-sm opacity-70 line-clamp-2">{product.description}</p>
                         </div>
                         <div className="flex items-center justify-between mt-auto">
-                          <p className={`font-bold ${headingColor} text-xl leading-none`}>
+                          <p className={`font-bold ${catalogStyles.headingColor} text-xl leading-none`}>
                             {product.price} ₴
                           </p>
                           <button
@@ -448,7 +436,7 @@ export default function Catalog() {
                             key={page}
                             onClick={() => handlePageChange(page)}
                             className={`px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 ${
-                                currentPage === page ? linkActive : linkHover
+                                currentPage === page ? catalogStyles.pagination.active : catalogStyles.pagination.hover
                             }`}
                             aria-label={`Page ${page}`}
                         >

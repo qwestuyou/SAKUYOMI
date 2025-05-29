@@ -8,20 +8,10 @@ import { useTheme } from '../context/ThemeContext';
 export default function CartIcon() {
     const { cartItems, removeFromCart } = useCart();
     const [isOpen, setIsOpen] = useState(false);
-    const { theme } = useTheme();
+    const { theme, themeStyles } = useTheme();
+    const cartStyles = themeStyles.cart;
 
     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
-    const bgMain =
-        theme === 'dark'
-            ? 'bg-[#1e1e1e]/90 text-white border-gray-700'
-            : 'bg-white/80 text-gray-900 border-white/40';
-
-    const divider =
-        theme === 'dark' ? 'border-gray-700' : 'border-gray-300';
-
-    const subText =
-        theme === 'dark' ? 'text-gray-400' : 'text-gray-500';
 
     return (
         <>
@@ -34,25 +24,25 @@ export default function CartIcon() {
                 <FaShoppingCart size={24} />
                 {totalItems > 0 && (
                     <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-xs rounded-full px-1.5 font-bold">
-            {totalItems}
-          </span>
+                        {totalItems}
+                    </span>
                 )}
             </motion.button>
 
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        className={`fixed bottom-0 right-0 sm:bottom-6 sm:right-6 w-full sm:w-[380px] max-h-[90vh] shadow-2xl rounded-t-3xl sm:rounded-3xl backdrop-blur-2xl border z-50 overflow-hidden ${bgMain}`}
+                        className={`fixed bottom-0 right-0 sm:bottom-6 sm:right-6 w-full sm:w-[380px] max-h-[90vh] shadow-2xl rounded-t-3xl sm:rounded-3xl backdrop-blur-2xl border z-50 overflow-hidden ${cartStyles.bgMain}`}
                         initial={{ opacity: 0, y: 50 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 50 }}
                         transition={{ duration: 0.3 }}
                     >
-                        <div className={`flex items-center justify-between p-4 border-b ${divider}`}>
+                        <div className={`flex items-center justify-between p-4 border-b ${cartStyles.divider}`}>
                             <h2 className="text-lg font-semibold text-[#c97476]">Your Cart</h2>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="text-gray-500 hover:text-red-500 transition"
+                                className={`${cartStyles.closeBtn} transition`}
                                 aria-label="Close cart"
                             >
                                 <FaTimes size={20} />
@@ -61,7 +51,7 @@ export default function CartIcon() {
 
                         <div className="p-4 overflow-y-auto max-h-[65vh]">
                             {cartItems.length === 0 ? (
-                                <p className={`text-center ${subText}`}>Your cart is empty</p>
+                                <p className={`text-center ${cartStyles.subText}`}>Your cart is empty</p>
                             ) : (
                                 <ul className="space-y-3">
                                     {cartItems.map((item) => (
@@ -73,12 +63,12 @@ export default function CartIcon() {
                                             />
                                             <div className="flex-1">
                                                 <p className="font-medium text-sm truncate">{item.name}</p>
-                                                <p className={`text-xs ${subText}`}>Qty: {item.quantity}</p>
-                                                <p className={`text-xs ${subText}`}>Price: {item.price} ₴</p>
+                                                <p className={`text-xs ${cartStyles.subText}`}>Qty: {item.quantity}</p>
+                                                <p className={`text-xs ${cartStyles.subText}`}>Price: {item.price} ₴</p>
                                             </div>
                                             <button
                                                 onClick={() => removeFromCart(item.id)}
-                                                className="text-red-500 hover:text-red-700 font-bold text-lg"
+                                                className={`${cartStyles.removeBtn} font-bold text-lg`}
                                                 aria-label={`Remove ${item.name} from cart`}
                                             >
                                                 &times;
@@ -90,11 +80,11 @@ export default function CartIcon() {
                         </div>
 
                         {cartItems.length > 0 && (
-                            <div className={`p-4 border-t ${divider}`}>
+                            <div className={`p-4 border-t ${cartStyles.divider}`}>
                                 <Link
                                     to="/cart"
                                     onClick={() => setIsOpen(false)}
-                                    className="block w-full text-center bg-[#f59c9e] text-white font-semibold py-2 rounded-full hover:bg-[#e48c8d] transition"
+                                    className={`block w-full text-center ${cartStyles.cartButton} font-semibold py-2 rounded-full transition`}
                                 >
                                     Go to Cart
                                 </Link>

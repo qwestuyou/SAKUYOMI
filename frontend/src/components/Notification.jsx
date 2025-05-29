@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTheme } from "../context/ThemeContext";
 
 const NotificationContext = createContext();
 
@@ -9,11 +10,18 @@ export function useNotification() {
 
 export function NotificationProvider({ children }) {
     const [notification, setNotification] = useState(null);
+    const { themeStyles } = useTheme();
 
     const showNotification = useCallback((message, type = "info", duration = 3000) => {
         setNotification({ message, type });
         setTimeout(() => setNotification(null), duration);
     }, []);
+
+    const typeClass = {
+        info: themeStyles.notification.info,
+        success: themeStyles.notification.success,
+        error: themeStyles.notification.error
+    };
 
     return (
         <NotificationContext.Provider value={showNotification}>
@@ -26,19 +34,12 @@ export function NotificationProvider({ children }) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -20, scale: 0.95 }}
                         transition={{ duration: 0.4, ease: "easeOut" }}
-                        className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50 
-            px-6 py-3 rounded-xl shadow-2xl text-white text-center text-lg font-semibold 
-            ${
-                            notification.type === "error"
-                                ? "bg-[#f26d7d]"
-                                : notification.type === "success"
-                                    ? "bg-[#f59c9e]"
-                                    : "bg-[#fbb5c1]"
-                        }`}
+                        className={`fixed top-6 left-1/2 transform -translate-x-1/2 z-50
+                            ${themeStyles.notification.base} 
+                            ${themeStyles.notification.backdrop} 
+                            ${typeClass[notification.type]}`}
                         style={{
-                            boxShadow: "0 0 20px rgba(245, 156, 158, 0.5)",
-                            backdropFilter: "blur(6px)",
-                            border: "1px solid rgba(255, 255, 255, 0.25)",
+                            boxShadow: themeStyles.notification.shadow,
                             maxWidth: "90%",
                             width: "max-content",
                         }}

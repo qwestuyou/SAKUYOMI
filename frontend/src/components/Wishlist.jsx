@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
-export default function Wishlist({ sectionBg }) {
+export default function Wishlist() {
+  const { theme, themeStyles } = useTheme();
+  const styles = themeStyles.wishlist;
+
   const [wishlistIds, setWishlistIds] = useState(() => {
     try {
       const saved = localStorage.getItem("wishlist");
@@ -43,19 +47,9 @@ export default function Wishlist({ sectionBg }) {
   const currentProducts = wishlistProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(wishlistProducts.length / productsPerPage);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const linkActive = theme => theme === "dark" ? "bg-[#9b5f5f] text-white" : "bg-[#f59c9e] text-white";
-  const linkHover = theme => theme === "dark" ? "hover:bg-[#242424]" : "hover:bg-[#feeae6]";
-  const closeButtonBg = sectionBg.includes("dark") ? "bg-gray-800/80" : "bg-white/80";
-  const closeButtonBorder = sectionBg.includes("dark") ? "border-gray-600" : "border-gray-200";
-
   return (
-      <div className={`mt-6 p-6 rounded-3xl shadow-lg hover:shadow-xl transition duration-300 ${sectionBg}`}>
-        <h2 className="text-2xl font-bold text-[#f59c9e] mb-4">Wishlist</h2>
+      <div className={`mt-6 p-6 rounded-3xl shadow-lg hover:shadow-xl transition duration-300 ${styles.sectionBg}`}>
+        <h2 className={`text-2xl font-bold ${styles.heading} mb-4`}>Wishlist</h2>
 
         {wishlistProducts.length === 0 ? (
             <p className="italic text-sm opacity-80">Your wishlist is empty.</p>
@@ -63,7 +57,7 @@ export default function Wishlist({ sectionBg }) {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {currentProducts.map(product => (
-                    <div key={product.id} className="rounded-2xl shadow p-4 relative">
+                    <div key={product.id} className={`rounded-2xl shadow p-4 relative ${styles.card}`}>
                       <Link to={`/product/${product.id}`}>
                         <img
                             src={product.image}
@@ -71,36 +65,34 @@ export default function Wishlist({ sectionBg }) {
                             className="rounded-xl mb-3 w-full h-48 object-cover"
                         />
                         <h3 className="text-lg font-semibold">{product.name}</h3>
-                        <p className="font-bold text-pink-500">{product.price} ₴</p>
+                        <p className={`font-bold ${styles.price}`}>{product.price} ₴</p>
                       </Link>
                       <button
                           onClick={() => removeFromWishlist(product.id)}
-                          className={`absolute top-3 right-3 ${closeButtonBg} ${closeButtonBorder} p-2 rounded-full shadow-md hover:scale-110 transition-all duration-300 border flex items-center justify-center`}
+                          className={`absolute top-3 right-3 p-2 rounded-full shadow-md hover:scale-110 transition-all duration-300 border flex items-center justify-center
+                    ${styles.closeBtnBg} ${styles.closeBtnBorder}`}
                           title="Remove from wishlist"
                           aria-label="Remove from wishlist"
                       >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="w-5 h-5 text-red-500 hover:text-red-700"
+                            className={`w-5 h-5 ${styles.closeIcon}`}
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
                             strokeWidth="2"
                         >
-                          <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M6 18L18 6M6 6l12 12"
-                          />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
                     </div>
                 ))}
               </div>
+
               {totalPages > 1 && (
                   <div className="flex justify-center items-center gap-2 mt-6">
                     <button
-                        onClick={() => handlePageChange(currentPage - 1)}
+                        onClick={() => setCurrentPage(currentPage - 1)}
                         disabled={currentPage === 1}
                         className="px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 disabled:opacity-50"
                         aria-label="Previous page"
@@ -110,9 +102,9 @@ export default function Wishlist({ sectionBg }) {
                     {Array.from({ length: totalPages }, (_, index) => index + 1).map(page => (
                         <button
                             key={page}
-                            onClick={() => handlePageChange(page)}
+                            onClick={() => setCurrentPage(page)}
                             className={`px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 ${
-                                currentPage === page ? linkActive(sectionBg.includes("dark") ? "dark" : "light") : linkHover(sectionBg.includes("dark") ? "dark" : "light")
+                                currentPage === page ? styles.pagination.active : styles.pagination.hover
                             }`}
                             aria-label={`Page ${page}`}
                         >
@@ -120,7 +112,7 @@ export default function Wishlist({ sectionBg }) {
                         </button>
                     ))}
                     <button
-                        onClick={() => handlePageChange(currentPage + 1)}
+                        onClick={() => setCurrentPage(currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className="px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 disabled:opacity-50"
                         aria-label="Next page"

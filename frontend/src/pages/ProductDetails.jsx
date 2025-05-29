@@ -1,20 +1,25 @@
 import { useEffect, useState } from "react";
-import { useParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import { useCart } from "../context/CartContext";
 
 export default function ProductDetails() {
     const { id } = useParams();
-    const { theme } = useTheme();
+    const { themeStyles } = useTheme();
     const { user } = useAuth();
+    const { addToCart } = useCart();
+    const navigate = useNavigate();
+
+    const styles = themeStyles.productDetails;
+
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [reviews, setReviews] = useState([]);
     const [content, setContent] = useState('');
     const [rating, setRating] = useState(5);
-    const navigate = useNavigate();
 
     useEffect(() => {
         fetch(`http://localhost:5000/api/products/${id}`)
@@ -77,22 +82,17 @@ export default function ProductDetails() {
     };
 
     if (!product) {
-        return <div className={`text-center p-10 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}>Loading...</div>;
+        return <div className={`text-center p-10 ${styles.subText}`}>Loading...</div>;
     }
 
-    const bg = theme === "dark" ? "bg-[#1a1a1a] text-white" : "bg-[#fff6f4] text-gray-800";
-    const cardBg = theme === "dark" ? "bg-[#2a2a2a] text-white" : "bg-white text-gray-800";
-    const subText = theme === "dark" ? "text-gray-400" : "text-gray-600";
-    const border = theme === "dark" ? "border-gray-700" : "border-pink-100";
-
     return (
-        <div className={`${bg} min-h-screen transition-colors duration-300`}>
+        <div className={`${styles.bg} min-h-screen transition-colors duration-300`}>
             <Header />
 
             <div className="max-w-6xl mx-auto p-6">
                 <button
                     onClick={() => navigate(-1)}
-                    className={`inline-block mb-6 ${subText} px-6 py-3 rounded-full transition cursor-pointer`}
+                    className={`inline-block mb-6 ${styles.subText} px-6 py-3 rounded-full transition cursor-pointer`}
                 >
                     ← Back
                 </button>
@@ -106,12 +106,12 @@ export default function ProductDetails() {
                 />
 
                 <div className="flex-1">
-                    <h1 className="text-4xl font-bold text-[#f59c9e] mb-4">{product.name}</h1>
-                    <p className={`mb-4 ${subText}`}>{product.description}</p>
-                    <p className="text-2xl text-[#c97476] font-bold mb-6">{product.price} ₴</p>
+                    <h1 className={`text-4xl font-bold mb-4 ${styles.heading}`}>{product.name}</h1>
+                    <p className={`mb-4 ${styles.subText}`}>{product.description}</p>
+                    <p className={`text-2xl font-bold mb-6 ${styles.price}`}>{product.price} ₴</p>
                     <button
                         onClick={() => addToCart(product)}
-                        className="bg-pink-500 text-white py-3 px-6 rounded hover:bg-pink-600"
+                        className={`py-3 px-6 rounded ${styles.btn}`}
                     >
                         Add to Cart
                     </button>
@@ -120,13 +120,13 @@ export default function ProductDetails() {
 
             {/* Similar Products */}
             <div className="p-6 max-w-6xl mx-auto">
-                <h2 className={`text-2xl font-semibold mb-4 ${theme === "dark" ? "text-white" : "text-gray-800"}`}>Similar Products</h2>
+                <h2 className={`text-2xl font-semibold mb-4 ${styles.text}`}>Similar Products</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                     {relatedProducts.map(rp => (
-                        <div key={rp.id} className={`${cardBg} p-4 rounded-2xl shadow hover:shadow-lg transition`}>
+                        <div key={rp.id} className={`${styles.card} p-4 rounded-2xl shadow hover:shadow-lg transition`}>
                             <img src={rp.image} alt={rp.name} className="rounded-xl mb-3 w-full h-40 object-cover" />
                             <h3 className="text-lg font-semibold">{rp.name}</h3>
-                            <p className="text-[#f59c9e] font-bold">{rp.price} ₴</p>
+                            <p className={`${styles.heading} font-bold`}>{rp.price} ₴</p>
                         </div>
                     ))}
                 </div>
@@ -134,13 +134,13 @@ export default function ProductDetails() {
 
             {/* Reviews */}
             <div className="p-6 max-w-6xl mx-auto">
-                <h2 className="text-2xl font-bold mb-4 text-[#f59c9e]">Reviews</h2>
+                <h2 className={`text-2xl font-bold mb-4 ${styles.heading}`}>Reviews</h2>
 
-                <form onSubmit={handleSubmit} className={`space-y-4 mb-6 ${cardBg} p-4 rounded-xl shadow`}>
+                <form onSubmit={handleSubmit} className={`space-y-4 mb-6 ${styles.card} p-4 rounded-xl shadow`}>
           <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className={`w-full p-2 border rounded resize-none bg-inherit ${subText}`}
+              className={`w-full p-2 border rounded resize-none bg-inherit ${styles.subText}`}
               placeholder="Write your review..."
               rows="3"
               required
@@ -155,7 +155,7 @@ export default function ProductDetails() {
                                 <option key={num} value={num}>{num} ⭐</option>
                             ))}
                         </select>
-                        <button type="submit" className="bg-[#f59c9e] text-white px-6 py-2 rounded hover:bg-[#e0bcbc] transition">
+                        <button type="submit" className={`px-6 py-2 rounded ${styles.btn}`}>
                             Add Review
                         </button>
                     </div>
@@ -165,7 +165,7 @@ export default function ProductDetails() {
                     {reviews.map((review) => (
                         <li
                             key={review.id}
-                            className={`${cardBg} p-4 rounded-2xl shadow-sm border ${border} hover:shadow-md transition`}
+                            className={`${styles.card} p-4 rounded-2xl shadow-sm border ${styles.border} hover:shadow-md transition`}
                         >
                             <div className="flex justify-between items-center mb-3">
                                 <div className="flex items-center gap-3">
@@ -176,20 +176,20 @@ export default function ProductDetails() {
                                                 : "/images/default-avatar.png"
                                         }
                                         alt="User Avatar"
-                                        className="w-10 h-10 rounded-full object-cover border border-pink-200"
+                                        className={`w-10 h-10 rounded-full object-cover border ${styles.avatarBorder}`}
                                     />
-                                    <p className="font-semibold text-[#c97476]">
+                                    <p className={`font-semibold ${styles.reviewAuthor}`}>
                                         {review.user?.name || "Anonymous"}
                                     </p>
                                 </div>
-                                <div className="flex items-center gap-3 text-sm text-gray-400">
+                                <div className="flex items-center gap-3 text-sm opacity-70">
                                     <div className="flex items-center gap-2 mb-2">
                                         <span className="text-yellow-400">{'⭐️'.repeat(review.rating)}</span>
                                     </div>
                                     <span>{new Date(review.createdAt).toLocaleDateString()}</span>
                                 </div>
                             </div>
-                            <p className={subText}>{review.content}</p>
+                            <p className={styles.subText}>{review.content}</p>
                         </li>
                     ))}
                 </ul>
