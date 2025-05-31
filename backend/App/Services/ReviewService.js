@@ -3,9 +3,17 @@ import prisma from "../../prisma/client.js";
 const ReviewService = {
     async getByProduct(productId) {
         return prisma.review.findMany({
-            where: { productId },
+            where: { productId, parentId: null },
             orderBy: { createdAt: "desc" },
-            include: { user: true },
+            include: {
+                user: true,
+                replies: {
+                    include: {
+                        user: true,
+                    },
+                    orderBy: { createdAt: "asc" },
+                },
+            },
         });
     },
 
@@ -17,13 +25,22 @@ const ReviewService = {
         });
     },
 
-    async create({ userId, productId, content, rating }) {
+    async create({ userId, productId, content, rating, parentId = null }) {
         return prisma.review.create({
             data: {
                 content,
                 rating,
                 user: { connect: { id: userId } },
                 product: { connect: { id: productId } },
+                parent: parentId ? { connect: { id: parentId } } : undefined,
+            },
+            include: {
+                user: true,
+                replies: {
+                    include: {
+                        user: true,
+                    },
+                },
             },
         });
     },
@@ -32,8 +49,14 @@ const ReviewService = {
         return prisma.review.findUnique({ where: { id } });
     },
 
-    delete(id) {
-        return prisma.review.delete({ where: { id } });
+    async delete(id) {
+        await prisma.review.deleteMany({
+            where: { parentId: id },
+        });
+
+        return prisma.review.delete({
+            where: { id },
+        });
     },
 };
 

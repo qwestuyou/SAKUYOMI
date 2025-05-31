@@ -23,6 +23,8 @@ export default function ProductDetails() {
     const [reviews, setReviews] = useState([]);
     const [content, setContent] = useState("");
     const [rating, setRating] = useState(5);
+    const [replyingTo, setReplyingTo] = useState(null);
+    const [replyContent, setReplyContent] = useState("");
 
     useEffect(() => {
         fetch(`http://localhost:5000/api/products/${id}`)
@@ -54,23 +56,18 @@ export default function ProductDetails() {
             .catch(() => notify("Failed to load similar products", "error"));
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e, parentId = null) => {
         e.preventDefault();
-        if (!user) {
-            notify("You need to login to leave a review", "error");
-            return;
-        }
+        if (!user) return notify("You need to login to leave a review", "error");
 
-        if (!content.trim()) {
-            notify("Review content cannot be empty", "error");
-            return;
-        }
+        const message = parentId ? replyContent : content;
+        if (!message.trim()) return notify("Review content cannot be empty", "error");
 
         const newReview = {
             productId: Number(id),
-            content,
-            rating,
-            userId: user.id,
+            content: message,
+            rating: parentId ? 5 : rating,
+            parentId,
         };
 
         try {
@@ -83,21 +80,26 @@ export default function ProductDetails() {
 
             if (res.ok) {
                 const added = await res.json();
-                setReviews((prev) => [
-                    {
-                        ...added,
-                        user: { name: user.name, avatar: user.avatar },
-                    },
-                    ...prev,
-                ]);
-                setContent("");
-                setRating(5);
+                if (parentId) {
+                    setReviews(prev =>
+                        prev.map(r =>
+                            r.id === parentId
+                                ? { ...r, replies: [...r.replies, { ...added, user }] }
+                                : r
+                        )
+                    );
+                    setReplyContent("");
+                    setReplyingTo(null);
+                } else {
+                    setReviews(prev => [{ ...added, user }, ...prev]);
+                    setContent("");
+                    setRating(5);
+                }
                 notify("Review submitted successfully", "success");
             } else {
                 notify("Failed to submit review", "error");
             }
-        } catch (err) {
-            console.error(err);
+        } catch {
             notify("Network error while submitting review", "error");
         }
     };
@@ -261,7 +263,7 @@ export default function ProductDetails() {
 
                 {user && (
                     <motion.form
-                        onSubmit={handleSubmit}
+                        onSubmit={(e) => handleSubmit(e)}
                         className={`space-y-4 mb-8 ${styles.card} p-6 rounded-xl shadow-md`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -273,7 +275,6 @@ export default function ProductDetails() {
                             className={`w-full p-3 border rounded-lg resize-none bg-inherit ${styles.subText} focus:ring-2 focus:ring-[#f59c9e] transition-all duration-200`}
                             placeholder="Write your review..."
                             rows="4"
-                            required
                         />
                         <div className="flex items-center justify-between">
                             <select
@@ -282,16 +283,13 @@ export default function ProductDetails() {
                                 className="border rounded-lg p-2 bg-inherit focus:ring-2 focus:ring-[#f59c9e] transition-all duration-200"
                             >
                                 {[5, 4, 3, 2, 1].map((num) => (
-                                    <option key={num} value={num}>
-                                        {num} ⭐
-                                    </option>
+                                    <option key={num} value={num}>{num} ⭐</option>
                                 ))}
                             </select>
                             <motion.button
                                 type="submit"
                                 className={`px-6 py-3 rounded-lg ${styles.btn} hover:bg-[#f59c9e] hover:text-white transition-all duration-200`}
                                 whileHover={{ scale: 1.05 }}
-                                transition={{ duration: 0.2 }}
                             >
                                 Add Review
                             </motion.button>
@@ -303,7 +301,7 @@ export default function ProductDetails() {
                     {reviews.map((review) => (
                         <motion.li
                             key={review.id}
-                            className={`${styles.card} p-6 rounded-2xl shadow-md border ${styles.border} transition-all duration-300`}
+                            className={`${styles.card} p-6 rounded-2xl shadow-md border ${styles.border}`}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.4 }}
@@ -311,25 +309,32 @@ export default function ProductDetails() {
                             <div className="flex justify-between items-center mb-4">
                                 <div className="flex items-center gap-4">
                                     <img
-                                        src={
-                                            review.user?.avatar
-                                                ? `http://localhost:5000${review.user.avatar}`
-                                                : "/images/default-avatar.png"
-                                        }
-                                        alt="User Avatar"
+                                        src={review.user?.avatar ? `http://localhost:5000${review.user.avatar}` : "/images/default-avatar.png"}
                                         className={`w-12 h-12 rounded-full object-cover border ${styles.avatarBorder}`}
+                                        alt="avatar"
                                     />
-                                    <p className={`font-semibold ${styles.reviewAuthor}`}>
-                                        {review.user?.name || "Anonymous"}
-                                    </p>
+                                    <p className={`font-semibold ${styles.reviewAuthor}`}>{review.user?.name}</p>
                                 </div>
                                 <div className="flex items-center gap-4 text-sm opacity-70">
                                     <span className="text-yellow-400">{'⭐️'.repeat(review.rating)}</span>
                                     <span>{new Date(review.createdAt).toLocaleDateString()}</span>
                                 </div>
                             </div>
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                                <p className={`${styles.subText} flex-1`}>{review.content}</p>
+
+                            <p className={`${styles.subText} mb-3`}>{review.content}</p>
+
+                            <div className="flex gap-4">
+                                {user && (
+                                    <motion.button
+                                        onClick={() =>
+                                            setReplyingTo(replyingTo === review.id ? null : review.id)
+                                        }
+                                        className="text-sm text-[#f59c9e] hover:underline"
+                                        whileHover={{ scale: 1.05 }}
+                                    >
+                                        {replyingTo === review.id ? "Cancel" : "Reply"}
+                                    </motion.button>
+                                )}
 
                                 {(user?.id === review.userId || user?.isAdmin) && (
                                     <motion.button
@@ -337,39 +342,67 @@ export default function ProductDetails() {
                                             const confirmed = window.confirm("Delete this review?");
                                             if (!confirmed) return;
 
-                                            try {
-                                                const res = await fetch(`http://localhost:5000/api/reviews/${review.id}`, {
-                                                    method: "DELETE",
-                                                    credentials: "include",
-                                                });
-
-                                                if (res.ok) {
-                                                    setReviews((prev) => prev.filter((r) => r.id !== review.id));
-                                                    notify("Review deleted", "success");
-                                                } else {
-                                                    notify("Failed to delete review", "error");
-                                                }
-                                            } catch (err) {
-                                                notify("Network error", "error");
+                                            const res = await fetch(`http://localhost:5000/api/reviews/${review.id}`, {
+                                                method: "DELETE",
+                                                credentials: "include",
+                                            });
+                                            if (res.ok) {
+                                                setReviews(prev => prev.filter(r => r.id !== review.id));
+                                                notify("Review deleted", "success");
+                                            } else {
+                                                notify("Failed to delete review", "error");
                                             }
                                         }}
-                                        className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
+                                        className="text-sm text-red-500 hover:underline"
                                         whileHover={{ scale: 1.05 }}
-                                        transition={{ duration: 0.2 }}
                                     >
-                                        <svg
-                                            className="w-4 h-4"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
                                         Delete
                                     </motion.button>
                                 )}
                             </div>
+
+                            {replyingTo === review.id && (
+                                <form
+                                    onSubmit={(e) => handleSubmit(e, review.id)}
+                                    className="mt-4 space-y-2"
+                                >
+                                    <textarea
+                                        value={replyContent}
+                                        onChange={(e) => setReplyContent(e.target.value)}
+                                        className="w-full p-2 border rounded-lg bg-inherit text-sm"
+                                        rows="2"
+                                        placeholder="Write a reply..."
+                                    />
+                                    <motion.button
+                                        type="submit"
+                                        className="px-4 py-2 rounded bg-[#f59c9e] text-white text-sm"
+                                        whileHover={{ scale: 1.05 }}
+                                    >
+                                        Submit Reply
+                                    </motion.button>
+                                </form>
+                            )}
+
+                            {review.replies?.length > 0 && (
+                                <ul className="mt-4 pl-6 border-l-2 border-[#f59c9e] space-y-4">
+                                    {review.replies.map(reply => (
+                                        <li key={reply.id} className="text-sm">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <img
+                                                    src={reply.user?.avatar ? `http://localhost:5000${reply.user.avatar}` : "/images/default-avatar.png"}
+                                                    className="w-8 h-8 rounded-full object-cover border"
+                                                    alt="avatar"
+                                                />
+                                                <span className="font-semibold">{reply.user?.name}</span>
+                                                <span className="text-xs text-gray-400 ml-auto">
+                                                    {new Date(reply.createdAt).toLocaleDateString()}
+                                                </span>
+                                            </div>
+                                            <p className="ml-10">{reply.content}</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </motion.li>
                     ))}
                 </ul>
