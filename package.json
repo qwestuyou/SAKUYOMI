@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "seed": "node backend/prisma/seed.js"
+    "seed": "node backend/prisma/seed-products.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.4",
