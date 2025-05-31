@@ -150,26 +150,67 @@ export default function ProductDetails() {
                     <h1 className={`text-4xl font-bold mb-4 ${styles.heading}`}>{product.name}</h1>
                     <p className={`mb-4 ${styles.subText}`}>{product.description}</p>
                     <p className={`text-2xl font-bold mb-6 ${styles.price}`}>{product.price} ₴</p>
-                    <button onClick={() => addToCart(product)} className={`py-3 px-6 rounded ${styles.btn}`}>
-                        Add to Cart
-                    </button>
+                    <p className={`text-2xl font-bold mb-6 ${styles.price}`}>{product.price} ₴</p>
 
-                    {user?.isAdmin && (
-                        <div className="flex gap-4 mt-6">
-                            <button
-                                onClick={() => navigate(`/edit-product/${product.id}`)}
-                                className="px-5 py-2 rounded-full bg-yellow-400 hover:bg-yellow-500 text-white font-bold transition"
+                    <div className="flex flex-wrap gap-4 items-center">
+                        {/* Add to Cart */}
+                        <button
+                            onClick={() => addToCart(product)}
+                            className="group inline-flex items-center gap-2 px-6 py-2 rounded-full text-[#f59c9e] border border-[#f59c9e] hover:bg-[#f59c9e] hover:text-white font-semibold transition-all duration-300"
+                        >
+                            <svg
+                                className="w-5 h-5 transition-transform duration-300 group-hover:scale-110"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                                viewBox="0 0 24 24"
                             >
-                                ✏️ Edit
-                            </button>
-                            <button
-                                onClick={handleDelete}
-                                className="px-5 py-2 rounded-full bg-red-500 hover:bg-red-600 text-white font-bold transition"
-                            >
-                                🗑️ Delete
-                            </button>
-                        </div>
-                    )}
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.2 6H17m-7-6V6m0 0h4m-4 0v7" />
+                            </svg>
+                            Add to Cart
+                        </button>
+
+                        {/* Admin buttons */}
+                        {user?.isAdmin && (
+                            <>
+                                {/* Edit */}
+                                <button
+                                    onClick={() => navigate(`/edit-product/${product.id}`)}
+                                    className="group inline-flex items-center gap-2 px-6 py-2 rounded-full text-yellow-600 border border-yellow-500 hover:bg-yellow-500 hover:text-white font-semibold transition-all duration-300"
+                                >
+                                    <svg
+                                        className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828A2 2 0 019 17H6v-3a2 2 0 012-2z" />
+                                    </svg>
+                                    Edit
+                                </button>
+
+                                {/* Delete */}
+                                <button
+                                    onClick={handleDelete}
+                                    className="group inline-flex items-center gap-2 px-6 py-2 rounded-full text-red-600 border border-red-500 hover:bg-red-500 hover:text-white font-semibold transition-all duration-300"
+                                >
+                                    <svg
+                                        className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                    Delete
+                                </button>
+                            </>
+                        )}
+                    </div>
+
+
                 </div>
             </div>
 
@@ -253,7 +294,47 @@ export default function ProductDetails() {
                                     <span>{new Date(review.createdAt).toLocaleDateString()}</span>
                                 </div>
                             </div>
-                            <p className={styles.subText}>{review.content}</p>
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                <p className={`${styles.subText} flex-1`}>{review.content}</p>
+
+                                {(user?.id === review.userId || user?.isAdmin) && (
+                                    <button
+                                        onClick={async () => {
+                                            const confirmed = window.confirm("Delete this review?");
+                                            if (!confirmed) return;
+
+                                            try {
+                                                const res = await fetch(`http://localhost:5000/api/reviews/${review.id}`, {
+                                                    method: "DELETE",
+                                                    credentials: "include",
+                                                });
+
+                                                if (res.ok) {
+                                                    setReviews((prev) => prev.filter((r) => r.id !== review.id));
+                                                    notify("Review deleted", "success");
+                                                } else {
+                                                    notify("Failed to delete review", "error");
+                                                }
+                                            } catch (err) {
+                                                notify("Network error", "error");
+                                            }
+                                        }}
+                                        className="group relative inline-flex items-center justify-center px-4 py-2 rounded-full overflow-hidden transition duration-300 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                                    >
+                                        <svg
+                                            className="w-4 h-4 transition-transform duration-300 transform group-hover:scale-110 group-hover:-rotate-12"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                            viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                        <span className="ml-2 text-sm font-semibold tracking-wide">Delete</span>
+                                    </button>
+                                )}
+                            </div>
                         </li>
                     ))}
                 </ul>

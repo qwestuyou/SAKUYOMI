@@ -27,6 +27,14 @@ const ReviewService = {
             },
         });
     },
+
+    getById(id) {
+        return prisma.review.findUnique({ where: { id } });
+    },
+
+    delete(id) {
+        return prisma.review.delete({ where: { id } });
+    },
 };
 
 export default ReviewService;
