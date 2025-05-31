@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
@@ -123,42 +124,63 @@ export default function ProductDetails() {
     };
 
     if (!product) {
-        return <div className={`text-center p-10 ${styles.subText}`}>Loading...</div>;
+        return (
+            <div className={`text-center p-10 ${styles.subText}`}>
+                Loading...
+            </div>
+        );
     }
 
     return (
-        <div className={`${styles.bg} min-h-screen transition-colors duration-300`}>
+        <div className={`${styles.bg} min-h-screen transition-colors duration-300 relative`}>
             <Header />
 
             <div className="max-w-6xl mx-auto p-6">
-                <button
+                <motion.button
                     onClick={() => navigate(-1)}
-                    className={`inline-block mb-6 ${styles.subText} px-6 py-3 rounded-full transition cursor-pointer`}
+                    className={`inline-flex items-center gap-2 mb-6 ${styles.subText} px-6 py-3 rounded-full transition cursor-pointer border ${styles.border} hover:bg-[#f59c9e] hover:text-white`}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.2 }}
                 >
-                    ← Back
-                </button>
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Back
+                </motion.button>
             </div>
 
-            <div className="max-w-6xl mx-auto p-6 flex flex-col md:flex-row gap-8">
+            <motion.div
+                className="max-w-6xl mx-auto p-6 flex flex-col md:flex-row gap-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+            >
                 <img
                     src={product.image}
                     alt={product.name}
-                    className="rounded-2xl w-full md:w-1/2 h-[500px] object-cover"
+                    className="rounded-2xl w-full md:w-1/2 h-[500px] object-cover shadow-md"
                 />
 
-                <div className="flex-1">
-                    <h1 className={`text-4xl font-bold mb-4 ${styles.heading}`}>{product.name}</h1>
-                    <p className={`mb-4 ${styles.subText}`}>{product.description}</p>
-                    <p className={`text-2xl font-bold mb-6 ${styles.price}`}>{product.price} ₴</p>
+                <div className="flex-1 space-y-6">
+                    <h1 className={`text-4xl font-bold ${styles.heading}`}>
+                        {product.name}
+                    </h1>
+                    <p className={`text-lg ${styles.subText}`}>
+                        {product.description}
+                    </p>
+                    <p className={`text-2xl font-bold ${styles.price}`}>
+                        {product.price} ₴
+                    </p>
 
                     <div className="flex flex-wrap gap-4 items-center">
-                        {/* Add to Cart */}
-                        <button
+                        <motion.button
                             onClick={() => addToCart(product)}
-                            className="group inline-flex items-center gap-2 px-6 py-2 rounded-full text-[#f59c9e] border border-[#f59c9e] hover:bg-[#f59c9e] hover:text-white font-semibold transition-all duration-300"
+                            className="group inline-flex items-center gap-2 px-6 py-3 rounded-full text-[#f59c9e] border border-[#f59c9e] hover:bg-[#f59c9e] hover:text-white font-semibold transition-all duration-300"
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.2 }}
                         >
                             <svg
-                                className="w-5 h-5 transition-transform duration-300 group-hover:scale-110"
+                                className="w-5 h-5"
                                 fill="none"
                                 stroke="currentColor"
                                 strokeWidth={2}
@@ -167,18 +189,18 @@ export default function ProductDetails() {
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.2 6H17m-7-6V6m0 0h4m-4 0v7" />
                             </svg>
                             Add to Cart
-                        </button>
+                        </motion.button>
 
-                        {/* Admin buttons */}
                         {user?.isAdmin && (
                             <>
-                                {/* Edit */}
-                                <button
+                                <motion.button
                                     onClick={() => navigate(`/edit-product/${product.id}`)}
-                                    className="group inline-flex items-center gap-2 px-6 py-2 rounded-full text-yellow-600 border border-yellow-500 hover:bg-yellow-500 hover:text-white font-semibold transition-all duration-300"
+                                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-full text-yellow-600 border border-yellow-500 hover:bg-yellow-500 hover:text-white font-semibold transition-all duration-300"
+                                    whileHover={{ scale: 1.05 }}
+                                    transition={{ duration: 0.2 }}
                                 >
                                     <svg
-                                        className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6"
+                                        className="w-5 h-5"
                                         fill="none"
                                         stroke="currentColor"
                                         strokeWidth={2}
@@ -187,15 +209,16 @@ export default function ProductDetails() {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828A2 2 0 019 17H6v-3a2 2 0 012-2z" />
                                     </svg>
                                     Edit
-                                </button>
+                                </motion.button>
 
-                                {/* Delete */}
-                                <button
+                                <motion.button
                                     onClick={handleDelete}
-                                    className="group inline-flex items-center gap-2 px-6 py-2 rounded-full text-red-600 border border-red-500 hover:bg-red-500 hover:text-white font-semibold transition-all duration-300"
+                                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-full text-red-600 border border-red-500 hover:bg-red-500 hover:text-white font-semibold transition-all duration-300"
+                                    whileHover={{ scale: 1.05 }}
+                                    transition={{ duration: 0.2 }}
                                 >
                                     <svg
-                                        className="w-5 h-5 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
+                                        className="w-5 h-5"
                                         fill="none"
                                         stroke="currentColor"
                                         strokeWidth={2}
@@ -204,53 +227,59 @@ export default function ProductDetails() {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                     Delete
-                                </button>
+                                </motion.button>
                             </>
                         )}
                     </div>
-
-
                 </div>
-            </div>
+            </motion.div>
 
             <div className="p-6 max-w-6xl mx-auto">
-                <h2 className={`text-2xl font-semibold mb-4 ${styles.text}`}>Similar Products</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <h2 className={`text-2xl font-semibold mb-6 ${styles.text}`}>Similar Products</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                     {relatedProducts.map((rp) => (
-                        <div
+                        <motion.div
                             key={rp.id}
-                            className={`${styles.card} p-4 rounded-2xl shadow hover:shadow-lg transition`}
+                            className={`${styles.card} p-4 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300`}
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.2 }}
                         >
                             <img
                                 src={rp.image}
                                 alt={rp.name}
-                                className="rounded-xl mb-3 w-full h-40 object-cover"
+                                className="rounded-xl mb-4 w-full h-40 object-cover"
                             />
-                            <h3 className="text-lg font-semibold">{rp.name}</h3>
+                            <h3 className="text-lg font-semibold truncate">{rp.name}</h3>
                             <p className={`${styles.heading} font-bold`}>{rp.price} ₴</p>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </div>
 
             <div className="p-6 max-w-6xl mx-auto">
-                <h2 className={`text-2xl font-bold mb-4 ${styles.heading}`}>Reviews</h2>
+                <h2 className={`text-2xl font-bold mb-6 ${styles.heading}`}>Reviews</h2>
 
                 {user && (
-                    <form onSubmit={handleSubmit} className={`space-y-4 mb-6 ${styles.card} p-4 rounded-xl shadow`}>
+                    <motion.form
+                        onSubmit={handleSubmit}
+                        className={`space-y-4 mb-8 ${styles.card} p-6 rounded-xl shadow-md`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.4 }}
+                    >
                         <textarea
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            className={`w-full p-2 border rounded resize-none bg-inherit ${styles.subText}`}
+                            className={`w-full p-3 border rounded-lg resize-none bg-inherit ${styles.subText} focus:ring-2 focus:ring-[#f59c9e] transition-all duration-200`}
                             placeholder="Write your review..."
-                            rows="3"
+                            rows="4"
                             required
                         />
                         <div className="flex items-center justify-between">
                             <select
                                 value={rating}
                                 onChange={(e) => setRating(parseInt(e.target.value))}
-                                className="border rounded p-2 bg-inherit"
+                                className="border rounded-lg p-2 bg-inherit focus:ring-2 focus:ring-[#f59c9e] transition-all duration-200"
                             >
                                 {[5, 4, 3, 2, 1].map((num) => (
                                     <option key={num} value={num}>
@@ -258,21 +287,29 @@ export default function ProductDetails() {
                                     </option>
                                 ))}
                             </select>
-                            <button type="submit" className={`px-6 py-2 rounded ${styles.btn}`}>
+                            <motion.button
+                                type="submit"
+                                className={`px-6 py-3 rounded-lg ${styles.btn} hover:bg-[#f59c9e] hover:text-white transition-all duration-200`}
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ duration: 0.2 }}
+                            >
                                 Add Review
-                            </button>
+                            </motion.button>
                         </div>
-                    </form>
+                    </motion.form>
                 )}
 
-                <ul className="list-none space-y-4">
+                <ul className="list-none space-y-6">
                     {reviews.map((review) => (
-                        <li
+                        <motion.li
                             key={review.id}
-                            className={`${styles.card} p-4 rounded-2xl shadow-sm border ${styles.border} hover:shadow-md transition`}
+                            className={`${styles.card} p-6 rounded-2xl shadow-md border ${styles.border} transition-all duration-300`}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.4 }}
                         >
-                            <div className="flex justify-between items-center mb-3">
-                                <div className="flex items-center gap-3">
+                            <div className="flex justify-between items-center mb-4">
+                                <div className="flex items-center gap-4">
                                     <img
                                         src={
                                             review.user?.avatar
@@ -280,16 +317,14 @@ export default function ProductDetails() {
                                                 : "/images/default-avatar.png"
                                         }
                                         alt="User Avatar"
-                                        className={`w-10 h-10 rounded-full object-cover border ${styles.avatarBorder}`}
+                                        className={`w-12 h-12 rounded-full object-cover border ${styles.avatarBorder}`}
                                     />
                                     <p className={`font-semibold ${styles.reviewAuthor}`}>
                                         {review.user?.name || "Anonymous"}
                                     </p>
                                 </div>
-                                <div className="flex items-center gap-3 text-sm opacity-70">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <span className="text-yellow-400">{'⭐️'.repeat(review.rating)}</span>
-                                    </div>
+                                <div className="flex items-center gap-4 text-sm opacity-70">
+                                    <span className="text-yellow-400">{'⭐️'.repeat(review.rating)}</span>
                                     <span>{new Date(review.createdAt).toLocaleDateString()}</span>
                                 </div>
                             </div>
@@ -297,7 +332,7 @@ export default function ProductDetails() {
                                 <p className={`${styles.subText} flex-1`}>{review.content}</p>
 
                                 {(user?.id === review.userId || user?.isAdmin) && (
-                                    <button
+                                    <motion.button
                                         onClick={async () => {
                                             const confirmed = window.confirm("Delete this review?");
                                             if (!confirmed) return;
@@ -318,23 +353,24 @@ export default function ProductDetails() {
                                                 notify("Network error", "error");
                                             }
                                         }}
-                                        className="group relative inline-flex items-center justify-center px-4 py-2 rounded-full overflow-hidden transition duration-300 border border-red-500 text-red-500 hover:bg-red-500 hover:text-white"
+                                        className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
+                                        whileHover={{ scale: 1.05 }}
+                                        transition={{ duration: 0.2 }}
                                     >
                                         <svg
-                                            className="w-4 h-4 transition-transform duration-300 transform group-hover:scale-110 group-hover:-rotate-12"
+                                            className="w-4 h-4"
                                             fill="none"
                                             stroke="currentColor"
                                             strokeWidth="2"
                                             viewBox="0 0 24 24"
-                                            xmlns="http://www.w3.org/2000/svg"
                                         >
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
-                                        <span className="ml-2 text-sm font-semibold tracking-wide">Delete</span>
-                                    </button>
+                                        Delete
+                                    </motion.button>
                                 )}
                             </div>
-                        </li>
+                        </motion.li>
                     ))}
                 </ul>
             </div>
