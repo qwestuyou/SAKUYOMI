@@ -30,9 +30,7 @@ export default function ProductDetails() {
                 setProduct(data);
                 fetchRelatedProducts(data.categoryId, data.id);
             })
-            .catch(() => {
-                notify("Failed to load product", "error");
-            });
+            .catch(() => notify("Failed to load product", "error"));
     }, [id]);
 
     useEffect(() => {
@@ -103,6 +101,27 @@ export default function ProductDetails() {
         }
     };
 
+    const handleDelete = async () => {
+        const confirmed = window.confirm("Are you sure you want to delete this product?");
+        if (!confirmed) return;
+
+        try {
+            const res = await fetch(`http://localhost:5000/api/products/${product.id}`, {
+                method: "DELETE",
+                credentials: "include",
+            });
+
+            if (res.ok) {
+                notify("Product deleted successfully", "success");
+                navigate("/catalog");
+            } else {
+                notify("Failed to delete product", "error");
+            }
+        } catch (err) {
+            notify("Error deleting product", "error");
+        }
+    };
+
     if (!product) {
         return <div className={`text-center p-10 ${styles.subText}`}>Loading...</div>;
     }
@@ -134,10 +153,26 @@ export default function ProductDetails() {
                     <button onClick={() => addToCart(product)} className={`py-3 px-6 rounded ${styles.btn}`}>
                         Add to Cart
                     </button>
+
+                    {user?.isAdmin && (
+                        <div className="flex gap-4 mt-6">
+                            <button
+                                onClick={() => navigate(`/edit-product/${product.id}`)}
+                                className="px-5 py-2 rounded-full bg-yellow-400 hover:bg-yellow-500 text-white font-bold transition"
+                            >
+                                ✏️ Edit
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                className="px-5 py-2 rounded-full bg-red-500 hover:bg-red-600 text-white font-bold transition"
+                            >
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* Similar Products */}
             <div className="p-6 max-w-6xl mx-auto">
                 <h2 className={`text-2xl font-semibold mb-4 ${styles.text}`}>Similar Products</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -158,20 +193,19 @@ export default function ProductDetails() {
                 </div>
             </div>
 
-            {/* Reviews */}
             <div className="p-6 max-w-6xl mx-auto">
                 <h2 className={`text-2xl font-bold mb-4 ${styles.heading}`}>Reviews</h2>
 
                 {user && (
                     <form onSubmit={handleSubmit} className={`space-y-4 mb-6 ${styles.card} p-4 rounded-xl shadow`}>
-            <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                className={`w-full p-2 border rounded resize-none bg-inherit ${styles.subText}`}
-                placeholder="Write your review..."
-                rows="3"
-                required
-            />
+                        <textarea
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            className={`w-full p-2 border rounded resize-none bg-inherit ${styles.subText}`}
+                            placeholder="Write your review..."
+                            rows="3"
+                            required
+                        />
                         <div className="flex items-center justify-between">
                             <select
                                 value={rating}

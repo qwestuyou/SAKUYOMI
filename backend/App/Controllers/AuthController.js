@@ -85,6 +85,7 @@ class AuthController {
                     email: true,
                     avatar: true,
                     createdAt: true,
+                    isAdmin: true, // ← добавляем
                 },
             });
 
