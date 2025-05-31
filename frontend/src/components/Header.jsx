@@ -22,13 +22,24 @@ export default function Header() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
+    const isAdmin = user?.isAdmin;
+
+
     return (
         <header className={`shadow-md ${themeStyles.bgMain} transition-colors duration-300`}>
+
+            {isAdmin && (
+                <div className="w-full bg-red-600 text-white text-center py-1 font-bold text-sm tracking-widest">
+                    🔒 ADMIN MODE ENABLED
+                </div>
+            )}
+
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between relative">
                 <Link to="/" className={`flex items-center gap-2 text-2xl font-bold ${themeStyles.textMain}`}>
                     <img src="/images/sakura (3).png" alt="Logo" className="w-8 h-8" />
                     <span className="text-[#f59c9e]">SAKUYOMI</span>
                 </Link>
+
 
                 <div className="flex items-center gap-5">
                     <button
