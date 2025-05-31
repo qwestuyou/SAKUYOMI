@@ -150,7 +150,6 @@ export default function ProductDetails() {
                     <h1 className={`text-4xl font-bold mb-4 ${styles.heading}`}>{product.name}</h1>
                     <p className={`mb-4 ${styles.subText}`}>{product.description}</p>
                     <p className={`text-2xl font-bold mb-6 ${styles.price}`}>{product.price} ₴</p>
-                    <p className={`text-2xl font-bold mb-6 ${styles.price}`}>{product.price} ₴</p>
 
                     <div className="flex flex-wrap gap-4 items-center">
                         {/* Add to Cart */}
