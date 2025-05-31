@@ -6,6 +6,7 @@ import { useTheme } from "../context/ThemeContext";
 import { FaRegHeart, FaHeart, FaShoppingCart, FaSearch, FaFilter, FaList, FaTimes } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNotification } from "../components/Notification";
 
 export default function Catalog() {
   const { theme, themeStyles } = useTheme();
@@ -14,16 +15,9 @@ export default function Catalog() {
   const category = params.get("category");
   const currentCategory = category?.toLowerCase() || "all";
   const { addToCart } = useCart();
+  const notify = useNotification();
 
-  const [wishlist, setWishlist] = useState(() => {
-    try {
-      const saved = localStorage.getItem("wishlist");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
+  const [wishlist, setWishlist] = useState([]);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -45,10 +39,17 @@ export default function Catalog() {
   const productsPerPage = 12;
 
   useEffect(() => {
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
-  }, [wishlist]);
+    fetch("http://localhost:5000/api/wishlist", {
+      credentials: "include",
+    })
+        .then((res) => res.json())
+        .then((data) => setWishlist(data.map((p) => p.id)))
+        .catch((err) => {
+          console.error("Failed to load wishlist", err);
+          notify("Failed to load wishlist", "error");
+        });
+  }, []);
 
-  // Загрузка категорий
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -57,6 +58,7 @@ export default function Catalog() {
         setCategories(data);
       } catch (error) {
         console.error("Error loading categories:", error);
+        notify("Failed to load categories", "error");
       }
     };
     loadCategories();
@@ -79,6 +81,7 @@ export default function Catalog() {
         setFilteredProducts(filtered);
       } catch (error) {
         console.error("Error loading products:", error);
+        notify("Failed to load products", "error");
       } finally {
         setIsLoading(false);
       }
@@ -149,13 +152,37 @@ export default function Catalog() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const toggleWishlist = (productId) => {
-    setWishlist(prev =>
-        prev.includes(productId)
-            ? prev.filter(id => id !== productId)
-            : [...prev, productId]
-    );
+  const toggleWishlist = async (productId) => {
+    const isWished = wishlist.includes(productId);
+    try {
+      const res = await fetch(
+          isWished
+              ? `http://localhost:5000/api/wishlist/${productId}`
+              : `http://localhost:5000/api/wishlist`,
+          {
+            method: isWished ? "DELETE" : "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: isWished ? null : JSON.stringify({ productId }),
+          }
+      );
+
+      if (!res.ok) throw new Error();
+
+      setWishlist((prev) =>
+          isWished ? prev.filter((id) => id !== productId) : [...prev, productId]
+      );
+
+      notify(
+          isWished ? "Removed from wishlist" : "Added to wishlist",
+          isWished ? "info" : "success"
+      );
+    } catch (err) {
+      console.error("Failed to toggle wishlist", err);
+      notify("Failed to update wishlist", "error");
+    }
   };
+
 
   const resetFilters = () => {
     setSizeFilter("");

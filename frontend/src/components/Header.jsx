@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { Moon, Sun } from "lucide-react";
@@ -8,9 +8,9 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Header() {
     const { user, logout } = useAuth();
     const { theme, toggleTheme, themeStyles } = useTheme();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -30,19 +30,7 @@ export default function Header() {
                     <span className="text-[#f59c9e]">SAKUYOMI</span>
                 </Link>
 
-                <button
-                    className="md:hidden text-2xl"
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    aria-label="Toggle menu"
-                >
-                    {isMenuOpen ? "✕" : "☰"}
-                </button>
-
-                <div
-                    className={`absolute md:static top-16 left-0 w-full md:w-auto z-40 rounded-xl md:rounded-none md:flex-row md:flex md:items-center gap-5 p-4 md:p-0 shadow-md md:shadow-none transition-all duration-300 ${
-                        isMenuOpen ? "flex flex-col" : "hidden md:flex"
-                    } ${themeStyles.bgDropdown}`}
-                >
+                <div className="flex items-center gap-5">
                     <button
                         onClick={toggleTheme}
                         className="w-10 h-10 rounded-full border-2 border-pink-300 flex items-center justify-center hover:scale-110 transition-transform"
@@ -80,7 +68,6 @@ export default function Header() {
                                         transition={{ duration: 0.4, type: "spring", damping: 22 }}
                                         className={`absolute right-0 mt-2 w-40 overflow-hidden backdrop-blur-lg rounded-xl shadow-2xl z-50 border border-pink-100 ${themeStyles.dropdown.bg}`}
                                     >
-                                        {/* Sakura Petals */}
                                         <div className="absolute inset-0 pointer-events-none z-[-1]">
                                             <motion.div
                                                 initial={{ y: -30, x: 10, opacity: 0.6 }}
@@ -109,6 +96,7 @@ export default function Header() {
                                             onClick={() => {
                                                 logout();
                                                 setIsDropdownOpen(false);
+                                                navigate("/");
                                             }}
                                             className={`w-full text-left px-4 py-2 text-sm ${themeStyles.dropdown.text} ${themeStyles.dropdown.hover}`}
                                         >

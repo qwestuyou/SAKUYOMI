@@ -3,7 +3,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as DiscordStrategy } from "passport-discord";
 import prisma from "../prisma/client.js";
 import dotenv from "dotenv";
-import generateToken from "../utils/generateToken.js";
+import AuthService from "../App/Services/AuthService.js";
 
 dotenv.config();
 
@@ -29,8 +29,8 @@ passport.use(
           });
         }
 
-        const token = generateToken(user.id);
-        done(null, { user, token });
+          const token = AuthService.generateToken(user.id);
+          done(null, { user, token });
       } catch (err) {
         done(err, null);
       }
@@ -60,8 +60,8 @@ passport.use(
               },
             });
           }
-  
-          const token = generateToken(user.id);
+
+          const token = AuthService.generateToken(user.id);
           done(null, { user, token });
         } catch (err) {
           done(err, null);

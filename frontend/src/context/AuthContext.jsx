@@ -6,51 +6,49 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const login = (userData, token) => {
-    localStorage.setItem("token", token);
+  const login = (userData) => {
     setUser(userData);
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
+  const logout = async () => {
+    try {
+      await fetch("http://localhost:5000/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Ошибка при выходе", err);
+    }
     setUser(null);
   };
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setLoading(false);
-        return;
-      }
-
       try {
         const res = await fetch("http://localhost:5000/api/auth/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          method: "GET",
+          credentials: "include",
         });
+
         const data = await res.json();
 
         if (res.ok) {
           setUser(data.user);
-        } else {
-          localStorage.removeItem("token");
         }
       } catch (err) {
-        console.error("Ошибка при проверке токена", err);
+        console.error("Ошибка при проверке пользователя", err);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     checkAuth();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, login, logout, loading }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ user, setUser, login, logout, loading }}>
+        {children}
+      </AuthContext.Provider>
   );
 };
 

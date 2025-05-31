@@ -5,12 +5,14 @@ import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { useCart } from "../context/CartContext";
+import { useNotification } from "../components/Notification";
 
 export default function ProductDetails() {
     const { id } = useParams();
     const { themeStyles } = useTheme();
     const { user } = useAuth();
     const { addToCart } = useCart();
+    const notify = useNotification();
     const navigate = useNavigate();
 
     const styles = themeStyles.productDetails;
@@ -18,66 +20,86 @@ export default function ProductDetails() {
     const [product, setProduct] = useState(null);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [reviews, setReviews] = useState([]);
-    const [content, setContent] = useState('');
+    const [content, setContent] = useState("");
     const [rating, setRating] = useState(5);
 
     useEffect(() => {
         fetch(`http://localhost:5000/api/products/${id}`)
-            .then(res => res.json())
-            .then(data => {
+            .then((res) => res.json())
+            .then((data) => {
                 setProduct(data);
                 fetchRelatedProducts(data.categoryId, data.id);
+            })
+            .catch(() => {
+                notify("Failed to load product", "error");
             });
     }, [id]);
 
     useEffect(() => {
         if (!id) return;
         fetch(`http://localhost:5000/api/reviews/${id}`)
-            .then(res => res.json())
-            .then(data => setReviews(data));
+            .then((res) => res.json())
+            .then((data) => setReviews(data))
+            .catch(() => notify("Failed to load reviews", "error"));
     }, [id]);
 
     const fetchRelatedProducts = (categoryId, currentProductId) => {
         fetch("http://localhost:5000/api/products")
-            .then(res => res.json())
-            .then(allProducts => {
+            .then((res) => res.json())
+            .then((allProducts) => {
                 const related = allProducts.filter(
                     (p) => p.categoryId === categoryId && p.id !== currentProductId
                 );
                 setRelatedProducts(related.slice(0, 4));
-            });
+            })
+            .catch(() => notify("Failed to load similar products", "error"));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!content.trim()) return;
+        if (!user) {
+            notify("You need to login to leave a review", "error");
+            return;
+        }
+
+        if (!content.trim()) {
+            notify("Review content cannot be empty", "error");
+            return;
+        }
 
         const newReview = {
             productId: Number(id),
             content,
             rating,
-            userId: user?.id,
+            userId: user.id,
         };
 
-        const res = await fetch('http://localhost:5000/api/reviews', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newReview),
-        });
+        try {
+            const res = await fetch("http://localhost:5000/api/reviews", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify(newReview),
+            });
 
-        if (res.ok) {
-            const added = await res.json();
-            setReviews(prev => [
-                {
-                    ...added,
-                    user: { name: user.name }
-                },
-                ...prev
-            ]);
-            setContent('');
-            setRating(5);
-        } else {
-            alert('Помилка при додаванні відгуку');
+            if (res.ok) {
+                const added = await res.json();
+                setReviews((prev) => [
+                    {
+                        ...added,
+                        user: { name: user.name, avatar: user.avatar },
+                    },
+                    ...prev,
+                ]);
+                setContent("");
+                setRating(5);
+                notify("Review submitted successfully", "success");
+            } else {
+                notify("Failed to submit review", "error");
+            }
+        } catch (err) {
+            console.error(err);
+            notify("Network error while submitting review", "error");
         }
     };
 
@@ -109,10 +131,7 @@ export default function ProductDetails() {
                     <h1 className={`text-4xl font-bold mb-4 ${styles.heading}`}>{product.name}</h1>
                     <p className={`mb-4 ${styles.subText}`}>{product.description}</p>
                     <p className={`text-2xl font-bold mb-6 ${styles.price}`}>{product.price} ₴</p>
-                    <button
-                        onClick={() => addToCart(product)}
-                        className={`py-3 px-6 rounded ${styles.btn}`}
-                    >
+                    <button onClick={() => addToCart(product)} className={`py-3 px-6 rounded ${styles.btn}`}>
                         Add to Cart
                     </button>
                 </div>
@@ -122,9 +141,16 @@ export default function ProductDetails() {
             <div className="p-6 max-w-6xl mx-auto">
                 <h2 className={`text-2xl font-semibold mb-4 ${styles.text}`}>Similar Products</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    {relatedProducts.map(rp => (
-                        <div key={rp.id} className={`${styles.card} p-4 rounded-2xl shadow hover:shadow-lg transition`}>
-                            <img src={rp.image} alt={rp.name} className="rounded-xl mb-3 w-full h-40 object-cover" />
+                    {relatedProducts.map((rp) => (
+                        <div
+                            key={rp.id}
+                            className={`${styles.card} p-4 rounded-2xl shadow hover:shadow-lg transition`}
+                        >
+                            <img
+                                src={rp.image}
+                                alt={rp.name}
+                                className="rounded-xl mb-3 w-full h-40 object-cover"
+                            />
                             <h3 className="text-lg font-semibold">{rp.name}</h3>
                             <p className={`${styles.heading} font-bold`}>{rp.price} ₴</p>
                         </div>
@@ -136,30 +162,34 @@ export default function ProductDetails() {
             <div className="p-6 max-w-6xl mx-auto">
                 <h2 className={`text-2xl font-bold mb-4 ${styles.heading}`}>Reviews</h2>
 
-                <form onSubmit={handleSubmit} className={`space-y-4 mb-6 ${styles.card} p-4 rounded-xl shadow`}>
-          <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              className={`w-full p-2 border rounded resize-none bg-inherit ${styles.subText}`}
-              placeholder="Write your review..."
-              rows="3"
-              required
-          />
-                    <div className="flex items-center justify-between">
-                        <select
-                            value={rating}
-                            onChange={(e) => setRating(parseInt(e.target.value))}
-                            className="border rounded p-2 bg-inherit"
-                        >
-                            {[5, 4, 3, 2, 1].map(num => (
-                                <option key={num} value={num}>{num} ⭐</option>
-                            ))}
-                        </select>
-                        <button type="submit" className={`px-6 py-2 rounded ${styles.btn}`}>
-                            Add Review
-                        </button>
-                    </div>
-                </form>
+                {user && (
+                    <form onSubmit={handleSubmit} className={`space-y-4 mb-6 ${styles.card} p-4 rounded-xl shadow`}>
+            <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                className={`w-full p-2 border rounded resize-none bg-inherit ${styles.subText}`}
+                placeholder="Write your review..."
+                rows="3"
+                required
+            />
+                        <div className="flex items-center justify-between">
+                            <select
+                                value={rating}
+                                onChange={(e) => setRating(parseInt(e.target.value))}
+                                className="border rounded p-2 bg-inherit"
+                            >
+                                {[5, 4, 3, 2, 1].map((num) => (
+                                    <option key={num} value={num}>
+                                        {num} ⭐
+                                    </option>
+                                ))}
+                            </select>
+                            <button type="submit" className={`px-6 py-2 rounded ${styles.btn}`}>
+                                Add Review
+                            </button>
+                        </div>
+                    </form>
+                )}
 
                 <ul className="list-none space-y-4">
                     {reviews.map((review) => (

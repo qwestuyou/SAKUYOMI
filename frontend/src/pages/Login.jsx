@@ -20,8 +20,8 @@ export default function Login() {
     const name = params.get("name");
 
     if (token && name) {
-      localStorage.setItem("token", token);
-      login({ name }, token);
+      login({ name });
+      notify("Successfully logged in with OAuth", "success");
       navigate("/");
     }
   }, [location.search]);
@@ -36,23 +36,23 @@ export default function Login() {
       const res = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(form),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        localStorage.setItem("token", data.token);
-        login(data.user, data.token);
-        notify("Успешный вход", "success");
+        login(data.user);
+        notify("Login successful", "success");
         setTimeout(() => {
           window.location.href = "/";
         }, 500);
       } else {
-        notify(data.message || "Ошибка входа", "error");
+        notify(data.message || "Login failed", "error");
       }
     } catch (err) {
-      notify("Ошибка при входе", "error");
+      notify("An error occurred while logging in", "error");
       console.error(err);
     }
   };

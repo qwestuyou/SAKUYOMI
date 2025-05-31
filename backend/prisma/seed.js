@@ -1,30 +1,30 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
-import dotenv from 'dotenv'
-import path from 'path'
-dotenv.config({ path: path.resolve(process.cwd(), '.env') })
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 async function main() {
+  const categories = [
+    { name: "Manga", slug: "manga", image: "/images/mangacategory.png" },
+    { name: "Figure", slug: "figures", image: "/images/narutocategory.png" },
+    { name: "Poster", slug: "poster", image: "/images/postercategory.png" },
+    { name: "Badge", slug: "badge", image: "/images/badgecategory.png" },
+    { name: "Clothing", slug: "clothing", image: "/images/futbolkacategory.png" },
+    { name: "Accessories", slug: "accessories", image: "/images/acsesyarycategory.png" },
+    { name: "Funko Pop! Anime", slug: "funko-pop-anime", image: "/images/funkocategory.png" },
+    { name: "Stationery", slug: "stationery", image: "/images/stationerycategory.png" },
+  ];
 
   await prisma.category.createMany({
-    data: [
-      { name: "Manga" },
-      { name: "Figure" },
-      { name: "Poster" },
-      { name: "Badge" },
-      { name: "Clothing" },
-      { name: "Accessories" },
-      { name: "Funko Pop! Anime" },
-      { name: "Stationery" },
-    ],
+    data: categories,
     skipDuplicates: true,
   });
 
-
-  console.log('✅ Демо-данные успішно додані!');
+  console.log("✅ Категории успешно добавлены!");
 }
 
 main()
-  .catch((e) => console.error(e))
-  .finally(() => prisma.$disconnect());
+    .catch((e) => console.error(e))
+    .finally(() => prisma.$disconnect());

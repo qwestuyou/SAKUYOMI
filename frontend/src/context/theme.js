@@ -131,11 +131,26 @@ export const themeConfig = {
             social: "bg-white",
             button: "w-full bg-[#f59c9e] text-white py-3 rounded-lg hover:bg-[#f3b3b3] transform hover:scale-105 transition-all duration-300 font-semibold",
         },
+        form: {
+            inputBg: "bg-white",
+            inputBorder: "border border-gray-300",
+        },
+        modal: {
+            overlay: "fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50",
+            content: "bg-white p-8 rounded-2xl w-full max-w-md shadow-lg",
+            title: "text-xl font-bold mb-4 text-center text-gray-800",
+            label: "block mb-1 text-sm font-medium text-gray-700",
+            input: "w-full mb-3 px-4 py-2 rounded-xl bg-gray-100 text-gray-800 outline-none",
+            inputFile: "mb-4 w-full",
+            actions: "flex gap-4 justify-center mt-5",
+            saveBtn: "px-6 py-2 rounded-xl bg-[#f59c9e] text-white shadow-md",
+            cancelBtn: "px-6 py-2 rounded-xl bg-gray-200 text-gray-700 shadow-md"
+        },
     },
 
     dark: {
         bgMain: "bg-[#0f0f0f]",
-        bgDropdown: "bg-[#1a1a1a]",
+        bgDropdown: "bg-[#0f0f0f]",
         textMain: "text-white",
         navButton: {
             bg: "bg-[#a84d5f]",
@@ -265,6 +280,22 @@ export const themeConfig = {
             social: "bg-[#2a2a2a]",
             button: "w-full bg-[#f59c9e] text-white py-3 rounded-lg hover:bg-[#ea8d8d] transform hover:scale-105 transition-all duration-300 font-semibold",
         },
+        form: {
+            inputBg: "bg-black/20",
+            inputBorder: "border border-white/20",
+        },
+        modal: {
+            overlay: "fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50",
+            content: "bg-[#1e1e1e] p-8 rounded-2xl w-full max-w-md shadow-lg",
+            title: "text-xl font-bold mb-4 text-center text-white",
+            label: "block mb-1 text-sm font-medium text-gray-300",
+            input: "w-full mb-3 px-4 py-2 rounded-xl bg-[#2c2c2c] text-white outline-none",
+            inputFile: "mb-4 w-full",
+            actions: "flex gap-4 justify-center mt-5",
+            saveBtn: "px-6 py-2 rounded-xl bg-[#f59c9e] text-white shadow-md",
+            cancelBtn: "px-6 py-2 rounded-xl bg-[#333] text-white shadow-md"
+        }
+
     }
 };
 

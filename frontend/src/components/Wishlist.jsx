@@ -1,62 +1,61 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
+import { useNotification } from "./Notification";
 
-export default function Wishlist() {
-  const { theme, themeStyles } = useTheme();
+export default function Wishlist({ sectionBg }) {
+  const { themeStyles } = useTheme();
+  const notify = useNotification();
   const styles = themeStyles.wishlist;
 
-  const [wishlistIds, setWishlistIds] = useState(() => {
-    try {
-      const saved = localStorage.getItem("wishlist");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [wishlistProducts, setWishlistProducts] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 12;
 
   useEffect(() => {
-    if (wishlistIds.length === 0) {
-      setWishlistProducts([]);
-      setCurrentPage(1);
-      return;
-    }
-    fetch(`http://localhost:5000/api/products`)
-        .then(res => res.json())
-        .then(products => {
-          setWishlistProducts(products.filter(p => wishlistIds.includes(p.id)));
-          setCurrentPage(1);
-        })
-        .catch(console.error);
-  }, [wishlistIds]);
+    fetch("http://localhost:5000/api/wishlist", {
+      credentials: "include",
+    })
+        .then((res) => res.json())
+        .then(setWishlist)
+        .catch((err) => {
+          console.error("Failed to load wishlist", err);
+          notify("Failed to load wishlist", "error");
+        });
+  }, []);
 
-  const removeFromWishlist = (id) => {
-    setWishlistIds(prev => {
-      const newList = prev.filter(itemId => itemId !== id);
-      localStorage.setItem("wishlist", JSON.stringify(newList));
-      return newList;
-    });
+  const handleRemove = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/wishlist/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (res.ok) {
+        setWishlist((prev) => prev.filter((item) => item.id !== id));
+        notify("Removed from wishlist", "info");
+      } else {
+        notify("Failed to remove from wishlist", "error");
+      }
+    } catch (err) {
+      console.error("Error removing from wishlist:", err);
+      notify("Error removing from wishlist", "error");
+    }
   };
 
+  const totalPages = Math.ceil(wishlist.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = wishlistProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(wishlistProducts.length / productsPerPage);
+  const currentProducts = wishlist.slice(indexOfLastProduct - productsPerPage, indexOfLastProduct);
 
   return (
-      <div className={`mt-6 p-6 rounded-3xl shadow-lg hover:shadow-xl transition duration-300 ${styles.sectionBg}`}>
+      <div className={`mt-6 p-6 rounded-3xl shadow-lg hover:shadow-xl transition duration-300 ${sectionBg}`}>
         <h2 className={`text-2xl font-bold ${styles.heading} mb-4`}>Wishlist</h2>
 
-        {wishlistProducts.length === 0 ? (
+        {wishlist.length === 0 ? (
             <p className="italic text-sm opacity-80">Your wishlist is empty.</p>
         ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {currentProducts.map(product => (
+                {currentProducts.map((product) => (
                     <div key={product.id} className={`rounded-2xl shadow p-4 relative ${styles.card}`}>
                       <Link to={`/product/${product.id}`}>
                         <img
@@ -68,9 +67,9 @@ export default function Wishlist() {
                         <p className={`font-bold ${styles.price}`}>{product.price} ₴</p>
                       </Link>
                       <button
-                          onClick={() => removeFromWishlist(product.id)}
+                          onClick={() => handleRemove(product.id)}
                           className={`absolute top-3 right-3 p-2 rounded-full shadow-md hover:scale-110 transition-all duration-300 border flex items-center justify-center
-                    ${styles.closeBtnBg} ${styles.closeBtnBorder}`}
+                  ${styles.closeBtnBg} ${styles.closeBtnBorder}`}
                           title="Remove from wishlist"
                           aria-label="Remove from wishlist"
                       >
@@ -95,18 +94,16 @@ export default function Wishlist() {
                         onClick={() => setCurrentPage(currentPage - 1)}
                         disabled={currentPage === 1}
                         className="px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 disabled:opacity-50"
-                        aria-label="Previous page"
                     >
                       Previous
                     </button>
-                    {Array.from({ length: totalPages }, (_, index) => index + 1).map(page => (
+                    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
                         <button
                             key={page}
                             onClick={() => setCurrentPage(page)}
                             className={`px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 ${
                                 currentPage === page ? styles.pagination.active : styles.pagination.hover
                             }`}
-                            aria-label={`Page ${page}`}
                         >
                           {page}
                         </button>
@@ -115,7 +112,6 @@ export default function Wishlist() {
                         onClick={() => setCurrentPage(currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className="px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 disabled:opacity-50"
-                        aria-label="Next page"
                     >
                       Next
                     </button>
