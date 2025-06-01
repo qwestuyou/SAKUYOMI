@@ -25,12 +25,13 @@ const ReviewController = {
 
     async createReview(req, res) {
         try {
-            const { productId, content, rating } = req.body;
+            const { productId, content, rating, parentId } = req.body;
             const newReview = await ReviewService.create({
                 userId: req.user.id,
                 productId,
                 content,
                 rating,
+                parentId,
             });
             res.status(201).json(newReview);
         } catch (error) {
