@@ -44,7 +44,7 @@ export default function Catalog() {
   const productsPerPage = 12;
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/wishlist", {
+    fetch("/api/wishlist", {
       credentials: "include",
     })
         .then((res) => res.json())
@@ -58,7 +58,7 @@ export default function Catalog() {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/categories");
+        const response = await fetch("/api/categories");
         const data = await response.json();
         setCategories(data);
       } catch (error) {
@@ -73,7 +73,7 @@ export default function Catalog() {
     const loadProducts = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:5000/api/products");
+        const response = await fetch("/api/products");
         const data = await response.json();
         setProducts(data);
         let filtered = data;

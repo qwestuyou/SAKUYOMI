@@ -23,7 +23,7 @@ export default function Profile() {
 
   useEffect(() => {
     if (user?.id) {
-      fetch(`http://localhost:5000/api/reviews/user/${user.id}`, {
+      fetch(`/api/reviews/user/${user.id}`, {
         credentials: "include",
       })
           .then((res) => res.json())

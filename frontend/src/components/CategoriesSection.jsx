@@ -43,7 +43,7 @@ export default function CategoriesSection() {
     const categoriesStyles = themeStyles.categories;
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/categories")
+        fetch("/api/categories")
             .then((res) => res.json())
             .then((data) => setCategories(data))
             .catch((err) => console.error("Ошибка загрузки категорий:", err));

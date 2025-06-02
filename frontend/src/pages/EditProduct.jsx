@@ -14,7 +14,7 @@ export default function EditProduct() {
     const [formData, setFormData] = useState(null);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/products/${id}`)
+        fetch(`/api/products/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 setFormData({
@@ -50,7 +50,7 @@ export default function EditProduct() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+            const res = await fetch(`/api/products/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",

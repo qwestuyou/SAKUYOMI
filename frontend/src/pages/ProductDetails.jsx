@@ -27,7 +27,7 @@ export default function ProductDetails() {
     const [replyContent, setReplyContent] = useState("");
 
     useEffect(() => {
-        fetch(`http://localhost:5000/api/products/${id}`)
+        fetch(`/api/products/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 setProduct(data);
@@ -38,14 +38,14 @@ export default function ProductDetails() {
 
     useEffect(() => {
         if (!id) return;
-        fetch(`http://localhost:5000/api/reviews/${id}`)
+        fetch(`/api/reviews/${id}`)
             .then((res) => res.json())
             .then((data) => setReviews(data))
             .catch(() => notify("Failed to load reviews", "error"));
     }, [id]);
 
     const fetchRelatedProducts = (categoryId, currentProductId) => {
-        fetch("http://localhost:5000/api/products")
+        fetch("/api/products")
             .then((res) => res.json())
             .then((allProducts) => {
                 const related = allProducts.filter(
@@ -71,7 +71,7 @@ export default function ProductDetails() {
         };
 
         try {
-            const res = await fetch("http://localhost:5000/api/reviews", {
+            const res = await fetch("/api/reviews", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -109,7 +109,7 @@ export default function ProductDetails() {
         if (!confirmed) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/products/${product.id}`, {
+            const res = await fetch(`/api/products/${product.id}`, {
                 method: "DELETE",
                 credentials: "include",
             });
@@ -342,7 +342,7 @@ export default function ProductDetails() {
                                             const confirmed = window.confirm("Delete this review?");
                                             if (!confirmed) return;
 
-                                            const res = await fetch(`http://localhost:5000/api/reviews/${review.id}`, {
+                                            const res = await fetch(`/api/reviews/${review.id}`, {
                                                 method: "DELETE",
                                                 credentials: "include",
                                             });

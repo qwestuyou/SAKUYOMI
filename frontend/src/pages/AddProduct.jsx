@@ -47,7 +47,7 @@ export default function AddProduct() {
         features: formData.features || null,
       };
 
-      const res = await fetch("http://localhost:5000/api/products", {
+      const res = await fetch("/api/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

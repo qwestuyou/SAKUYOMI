@@ -13,7 +13,7 @@ export default function Wishlist({ sectionBg }) {
   const productsPerPage = 12;
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/wishlist", {
+    fetch("/api/wishlist", {
       credentials: "include",
     })
         .then((res) => res.json())
@@ -26,7 +26,7 @@ export default function Wishlist({ sectionBg }) {
 
   const handleRemove = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/wishlist/${id}`, {
+      const res = await fetch(`/api/wishlist/${id}`, {
         method: "DELETE",
         credentials: "include",
       });

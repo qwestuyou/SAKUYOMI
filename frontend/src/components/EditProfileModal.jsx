@@ -42,7 +42,7 @@ export default function EditProfileModal({ isOpen, onClose }) {
         }
 
         try {
-            const res = await fetch("http://localhost:5000/api/users/update", {
+            const res = await fetch("/api/users/update", {
                 method: "POST",
                 credentials: "include",
                 body: formData,
