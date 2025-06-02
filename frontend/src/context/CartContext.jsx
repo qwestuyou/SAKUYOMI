@@ -1,55 +1,73 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState(() => {
-    try {
-      const saved = localStorage.getItem('cart');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
+  const [cartItems, setCartItems] = useState([]);
+
+  const token = localStorage.getItem("access_token");
+
+  const api = axios.create({
+    baseURL: "/api/cart",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
+  const fetchCart = async () => {
+    try {
+      const res = await api.get("/");
+      setCartItems(res.data.items || []);
+    } catch (err) {
+      console.error("❌ Failed to load cart", err);
+    }
+  };
+
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (token) fetchCart();
+  }, [token]);
 
-  const addToCart = (product, quantity = 1) => {
-    setCartItems(prev => {
-      const index = prev.findIndex(item => item.id === product.id);
-      if (index !== -1) {
-        const newCart = [...prev];
-        newCart[index] = { ...newCart[index], quantity: newCart[index].quantity + quantity };
-        return newCart;
-      }
-      return [...prev, { ...product, quantity }];
-    });
+  const addToCart = async (product, quantity = 1) => {
+    try {
+      await api.post("/", { productId: product.id, quantity });
+      await fetchCart();
+    } catch (err) {
+      console.error("❌ Failed to add to cart", err);
+    }
   };
 
-  const removeFromCart = (productId) => {
-    setCartItems(prev => prev.filter(item => item.id !== productId));
+  const removeFromCart = async (productId) => {
+    try {
+      await api.delete(`/${productId}`);
+      await fetchCart();
+    } catch (err) {
+      console.error("❌ Failed to remove item", err);
+    }
   };
 
-  const updateQuantity = (productId, quantity) => {
-    if (quantity < 1) return;
-    setCartItems(prev => {
-      const newCart = [...prev];
-      const index = newCart.findIndex(item => item.id === productId);
-      if (index !== -1) {
-        newCart[index] = { ...newCart[index], quantity };
-      }
-      return newCart;
-    });
+  const updateQuantity = async (productId, quantity) => {
+    try {
+      await api.put("/", { productId, quantity });
+      await fetchCart();
+    } catch (err) {
+      console.error("❌ Failed to update quantity", err);
+    }
   };
 
-  const clearCart = () => setCartItems([]);
+  const clearCart = async () => {
+    try {
+      await api.delete("/");
+      setCartItems([]);
+    } catch (err) {
+      console.error("❌ Failed to clear cart", err);
+    }
+  };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart }}>
-      {children}
-    </CartContext.Provider>
+      <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, updateQuantity, clearCart }}>
+        {children}
+      </CartContext.Provider>
   );
 }
 

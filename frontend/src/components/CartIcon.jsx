@@ -1,17 +1,30 @@
 import React, { useState } from 'react';
-import { FaShoppingCart, FaTimes } from 'react-icons/fa';
+import { FaShoppingCart, FaTimes, FaPlus, FaMinus } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 
 export default function CartIcon() {
-    const { cartItems, removeFromCart } = useCart();
+    const { cartItems, removeFromCart, updateQuantity, clearCart } = useCart();
     const [isOpen, setIsOpen] = useState(false);
-    const { theme, themeStyles } = useTheme();
+    const { themeStyles } = useTheme();
     const cartStyles = themeStyles.cart;
 
     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = cartItems.reduce((sum, item) => sum + item.quantity * item.product.price, 0);
+
+    const handleDecrease = (item) => {
+        if (item.quantity > 1) {
+            updateQuantity(item.product.id, item.quantity - 1);
+        } else {
+            removeFromCart(item.product.id);
+        }
+    };
+
+    const handleIncrease = (item) => {
+        updateQuantity(item.product.id, item.quantity + 1);
+    };
 
     return (
         <>
@@ -53,23 +66,42 @@ export default function CartIcon() {
                             {cartItems.length === 0 ? (
                                 <p className={`text-center ${cartStyles.subText}`}>Your cart is empty</p>
                             ) : (
-                                <ul className="space-y-3">
+                                <ul className="space-y-4">
                                     {cartItems.map((item) => (
-                                        <li key={item.id} className="flex items-start gap-4">
+                                        <li key={item.id} className="flex gap-4 items-center">
                                             <img
-                                                src={item.image}
-                                                alt={item.name}
+                                                src={item.product.image}
+                                                alt={item.product.name}
                                                 className="w-16 h-16 rounded-xl object-cover border border-pink-200 shadow"
                                             />
                                             <div className="flex-1">
-                                                <p className="font-medium text-sm truncate">{item.name}</p>
-                                                <p className={`text-xs ${cartStyles.subText}`}>Qty: {item.quantity}</p>
-                                                <p className={`text-xs ${cartStyles.subText}`}>Price: {item.price} ₴</p>
+                                                <p className="font-medium text-sm truncate">{item.product.name}</p>
+                                                <p className={`text-xs ${cartStyles.subText}`}>
+                                                    Price: {item.product.price} ₴
+                                                </p>
+
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <button
+                                                        onClick={() => handleDecrease(item)}
+                                                        className="px-2 py-1 rounded-full bg-pink-100 hover:bg-pink-200 text-sm"
+                                                        aria-label="Decrease quantity"
+                                                    >
+                                                        <FaMinus size={10} />
+                                                    </button>
+                                                    <span className="text-sm">{item.quantity}</span>
+                                                    <button
+                                                        onClick={() => handleIncrease(item)}
+                                                        className="px-2 py-1 rounded-full bg-pink-100 hover:bg-pink-200 text-sm"
+                                                        aria-label="Increase quantity"
+                                                    >
+                                                        <FaPlus size={10} />
+                                                    </button>
+                                                </div>
                                             </div>
                                             <button
-                                                onClick={() => removeFromCart(item.id)}
+                                                onClick={() => removeFromCart(item.product.id)}
                                                 className={`${cartStyles.removeBtn} font-bold text-lg`}
-                                                aria-label={`Remove ${item.name} from cart`}
+                                                aria-label={`Remove ${item.product.name} from cart`}
                                             >
                                                 &times;
                                             </button>
@@ -81,13 +113,25 @@ export default function CartIcon() {
 
                         {cartItems.length > 0 && (
                             <div className={`p-4 border-t ${cartStyles.divider}`}>
-                                <Link
-                                    to="/cart"
-                                    onClick={() => setIsOpen(false)}
-                                    className={`block w-full text-center ${cartStyles.cartButton} font-semibold py-2 rounded-full transition`}
-                                >
-                                    Go to Cart
-                                </Link>
+                                <div className="flex justify-between items-center mb-2 text-sm font-medium">
+                                    <span>Total:</span>
+                                    <span>{totalPrice.toFixed(2)} ₴</span>
+                                </div>
+                                <div className="flex gap-2">
+                                    <Link
+                                        to="/cart"
+                                        onClick={() => setIsOpen(false)}
+                                        className={`flex-1 text-center ${cartStyles.cartButton} font-semibold py-2 rounded-full transition`}
+                                    >
+                                        Go to Cart
+                                    </Link>
+                                    <button
+                                        onClick={() => clearCart()}
+                                        className="px-4 py-2 text-sm rounded-full bg-red-100 hover:bg-red-200 text-red-600 font-semibold transition"
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </motion.div>

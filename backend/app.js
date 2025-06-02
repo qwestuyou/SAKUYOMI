@@ -11,6 +11,7 @@ import categoryRoutes from "./Routes/Web/CategoryRoutes.js";
 import profileRoutes from "./Routes/Web/ProfileRoutes.js";
 import reviewRoutes from "./Routes/Web/ReviewRoutes.js";
 import wishlistRoutes from "./Routes/Web/WishlistRoutes.js";
+import cartRoutes from "./Routes/Web/CartRoutes.js";
 import passport from "./Config/passport.js";
 
 dotenv.config();
@@ -47,6 +48,7 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/users", profileRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/update", profileRoutes);
+app.use("/api/cart", cartRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
