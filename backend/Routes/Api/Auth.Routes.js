@@ -1,17 +1,15 @@
 import express from "express";
 import AuthController from "../../App/Controllers/AuthController.js";
 import AuthMiddleware from "../../App/Middlewares/AuthMiddleware.js";
-import passport from "../../Config/Passport.js";
+import passport from "../../Config/passport.js";
 
 const router = express.Router();
 
-// 🔐 Ручная регистрация и логин
 router.post("/register", AuthController.register);
 router.post("/login", AuthController.login);
 router.post("/logout", AuthController.logout);
 router.get("/me", AuthMiddleware, AuthController.me);
 
-// 🌐 Google OAuth
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 router.get(
     "/google/callback",
@@ -31,7 +29,6 @@ router.get(
     }
 );
 
-// 🌐 Discord OAuth
 router.get("/discord", passport.authenticate("discord"));
 router.get(
     "/discord/callback",
