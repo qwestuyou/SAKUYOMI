@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import CartIcon from './components/CartIcon';
 import EditProduct from "./pages/EditProduct";
 import CheckoutPage from "./pages/CheckoutPage";
+import OAuthSuccess from "./pages/OAuthSuccess";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/oauth/success" element={<OAuthSuccess />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
