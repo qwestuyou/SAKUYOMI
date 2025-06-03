@@ -48,6 +48,15 @@ const CartController = {
             res.status(500).json({ error: "Failed to clear cart", message: error.message });
         }
     },
+
+    async checkout(req, res) {
+        try {
+            const order = await CartService.checkout(req.user.id);
+            res.status(201).json({ success: true, order });
+        } catch (error) {
+            res.status(400).json({ error: "Failed to checkout", message: error.message });
+        }
+    },
 };
 
 export default CartController;

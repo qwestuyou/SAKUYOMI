@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { FaShoppingCart, FaTimes, FaPlus, FaMinus } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 
@@ -24,6 +23,28 @@ export default function CartIcon() {
 
     const handleIncrease = (item) => {
         updateQuantity(item.product.id, item.quantity + 1);
+    };
+
+    const handleCheckout = async () => {
+        try {
+            const token = localStorage.getItem("access_token");
+            const res = await fetch("/api/cart/checkout", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
+
+            setIsOpen(false);
+            alert("Checkout completed successfully.");
+        } catch (err) {
+            console.error("Checkout failed:", err);
+            alert("Failed to complete checkout.");
+        }
     };
 
     return (
@@ -118,15 +139,14 @@ export default function CartIcon() {
                                     <span>{totalPrice.toFixed(2)} ₴</span>
                                 </div>
                                 <div className="flex gap-2">
-                                    <Link
-                                        to="/cart"
-                                        onClick={() => setIsOpen(false)}
+                                    <button
+                                        onClick={handleCheckout}
                                         className={`flex-1 text-center ${cartStyles.cartButton} font-semibold py-2 rounded-full transition`}
                                     >
-                                        Go to Cart
-                                    </Link>
+                                        Checkout
+                                    </button>
                                     <button
-                                        onClick={() => clearCart()}
+                                        onClick={clearCart}
                                         className="px-4 py-2 text-sm rounded-full bg-red-100 hover:bg-red-200 text-red-600 font-semibold transition"
                                     >
                                         Clear

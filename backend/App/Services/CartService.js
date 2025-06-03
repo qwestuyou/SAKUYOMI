@@ -60,8 +60,38 @@ const CartService = {
         await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
 
         return prisma.cart.delete({ where: { id: cart.id } });
-    }
+    },
 
+    async checkout(userId) {
+        const cart = await prisma.cart.findUnique({
+            where: { userId },
+            include: {
+                items: true,
+            },
+        });
+
+        if (!cart || cart.items.length === 0) {
+            throw new Error("Cart is empty");
+        }
+
+        const order = await prisma.order.create({
+            data: {
+                userId,
+                status: "pending",
+                items: {
+                    create: cart.items.map(item => ({
+                        productId: item.productId,
+                        quantity: item.quantity,
+                    })),
+                },
+            },
+        });
+
+        await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+        await prisma.cart.delete({ where: { id: cart.id } });
+
+        return order;
+    }
 };
 
 export default CartService;

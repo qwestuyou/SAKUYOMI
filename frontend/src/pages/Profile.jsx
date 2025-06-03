@@ -8,6 +8,7 @@ import { useTheme } from "../context/ThemeContext";
 import { useNotification } from "../components/Notification";
 import { useNavigate } from "react-router-dom";
 import EditProfileModal from "../components/EditProfileModal";
+import UserOrders from "../components/UserOrders";
 
 export default function Profile() {
   const { user, setUser, logout } = useAuth();
@@ -105,12 +106,12 @@ export default function Profile() {
                 </div>
             )}
 
-            {selectedTab === "orders" && (
-                <div>
-                  <h2 className={`text-2xl font-bold ${styles.name}`}>Orders</h2>
-                  <p className="italic text-sm opacity-80">You don’t have any orders yet</p>
-                </div>
-            )}
+              {selectedTab === "orders" && (
+                  <div>
+                      <h2 className={`text-2xl font-bold ${styles.name}`}>Orders</h2>
+                      <UserOrders cardStyle={styles.sectionBg} />
+                  </div>
+              )}
 
             {selectedTab === "wishlist" && <Wishlist sectionBg={styles.sectionBg} />}
             {selectedTab === "reviews" && (

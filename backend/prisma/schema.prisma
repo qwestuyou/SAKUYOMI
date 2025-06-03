@@ -1,132 +1,137 @@
-    generator client {
-      provider = "prisma-client-js"
-    }
+generator client {
+  provider = "prisma-client-js"
+}
 
-    datasource db {
-      provider = "postgresql"
-      url      = env("DATABASE_URL")
-    }
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
-    model Product {
-      id          Int      @id @default(autoincrement())
-      name        String
-      description String
-      price       Float
-      image       String
-      categoryId  Int
-      category    Category @relation(fields: [categoryId], references: [id])
-      orderItems  OrderItem[]
-      reviews     Review[]
-      cartItems CartItem[]
+model Product {
+  id          Int         @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  image       String
+  categoryId  Int
+  category    Category    @relation(fields: [categoryId], references: [id])
+  orderItems  OrderItem[]
+  reviews     Review[]
+  cartItems   CartItem[]
 
-      // Для фильтров:
-      anime       String?    // Название аниме (например, Naruto)
-      size        String?    // Размер (S, M, L, XL и т.д.)
-      material    String?    // Материал (хлопок, полиэстер, винил и т.п.)
-      language    String?    // Язык (английский, японский, украинский)
-      brand       String?    // Бренд или производитель
-      productType String?    // Тип товара (фигурка, футболка, постер и т.п.)
-      rating      Float?     // Средний рейтинг (например, 4.5)
-      inStock     Boolean     @default(true)    // Наличие на складе
-      color       String?    // Цвет (если актуально)
-      gender      String?    // Для одежды — "male", "female", "unisex"
-      ageRating   String?    // Возрастные ограничения (например, "13+", "18+")
-      features    String?    // Дополнительные характеристики, можно хранить как JSON или строку
+  // Для фильтров:
+  anime       String? // Название аниме (например, Naruto)
+  size        String? // Размер (S, M, L, XL и т.д.)
+  material    String? // Материал (хлопок, полиэстер, винил и т.п.)
+  language    String? // Язык (английский, японский, украинский)
+  brand       String? // Бренд или производитель
+  productType String? // Тип товара (фигурка, футболка, постер и т.п.)
+  rating      Float? // Средний рейтинг (например, 4.5)
+  inStock     Boolean @default(true) // Наличие на складе
+  color       String? // Цвет (если актуально)
+  gender      String? // Для одежды — "male", "female", "unisex"
+  ageRating   String? // Возрастные ограничения (например, "13+", "18+")
+  features    String? // Дополнительные характеристики, можно хранить как JSON или строку
 
-      wishlists Wishlist[]
-    }
+  wishlists Wishlist[]
+}
 
-    model Category {
-      id       Int       @id @default(autoincrement())
-      name     String?    @unique
-      slug     String     @unique
-      image    String
-      products Product[]
-    }
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String?   @unique
+  slug     String    @unique
+  image    String
+  products Product[]
+}
 
+model User {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  password  String
+  name      String
+  createdAt DateTime   @default(now())
+  orders    Order[]
+  profile   Profile?
+  reviews   Review[]
+  avatar    String?
+  wishlist  Wishlist[]
+  isAdmin   Boolean    @default(false)
+  cart      Cart?
+}
 
-    model User {
-      id        Int      @id @default(autoincrement())
-      email     String   @unique
-      password  String
-      name      String
-      createdAt DateTime @default(now())
-      orders    Order[]
-      profile   Profile?
-      reviews   Review[]
-      avatar    String?
-      wishlist Wishlist[]
-      isAdmin   Boolean  @default(false)
-      cart     Cart?
-    }
+model Profile {
+  id     Int    @id @default(autoincrement())
+  name   String
+  userId Int    @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
 
-    model Profile {
-      id     Int    @id @default(autoincrement())
-      name   String
-      userId Int    @unique
-      user   User   @relation(fields: [userId], references: [id])
-    }
+model Order {
+  id          Int           @id @default(autoincrement())
+  userId      Int
+  user        User          @relation(fields: [userId], references: [id])
+  status      String        @default("pending")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  items       OrderItem[]
 
-    model Order {
-      id        Int         @id @default(autoincrement())
-      userId    Int
-      user      User        @relation(fields: [userId], references: [id])
-      items     OrderItem[]
-      createdAt DateTime    @default(now())
-    }
+  fullName    String?
+  street      String?
+  city        String?
+  postalCode  String?
+  phone       String?
+}
 
-    model OrderItem {
-      id        Int     @id @default(autoincrement())
-      orderId   Int
-      productId Int
-      quantity  Int
-      product   Product @relation(fields: [productId], references: [id])
-      order     Order   @relation(fields: [orderId], references: [id])
-    }
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  product   Product @relation(fields: [productId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id])
+}
 
-    model Review {
-      id         Int      @id @default(autoincrement())
-      content    String
-      rating     Int
-      createdAt  DateTime @default(now())
-      productId  Int
-      product    Product  @relation(fields: [productId], references: [id])
-      userId     Int
-      user       User     @relation(fields: [userId], references: [id])
-      parentId   Int?     // Добавлено для вложенных комментариев
-      parent     Review?  @relation("ReviewReplies", fields: [parentId], references: [id])
-      replies    Review[] @relation("ReviewReplies")
-    }
+model Review {
+  id        Int      @id @default(autoincrement())
+  content   String
+  rating    Int
+  createdAt DateTime @default(now())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  parentId  Int? // Добавлено для вложенных комментариев
+  parent    Review?  @relation("ReviewReplies", fields: [parentId], references: [id])
+  replies   Review[] @relation("ReviewReplies")
+}
 
-    model Wishlist {
-      id        Int      @id @default(autoincrement())
-      userId    Int
-      productId Int
-      createdAt DateTime @default(now())
+model Wishlist {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  createdAt DateTime @default(now())
 
-      user    User    @relation(fields: [userId], references: [id])
-      product Product @relation(fields: [productId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
-      @@unique([userId, productId]) // уникальность: один товар один раз в wishlist
-    }
+  @@unique([userId, productId]) // уникальность: один товар один раз в wishlist
+}
 
-    model Cart {
-      id        Int        @id @default(autoincrement())
-      userId    Int        @unique
-      user      User       @relation(fields: [userId], references: [id])
-      items     CartItem[]
-      updatedAt DateTime   @updatedAt
-    }
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  updatedAt DateTime   @updatedAt
+}
 
-    model CartItem {
-      id        Int      @id @default(autoincrement())
-      cartId    Int
-      productId Int
-      quantity  Int      @default(1)
-      cart      Cart     @relation(fields: [cartId], references: [id])
-      product   Product  @relation(fields: [productId], references: [id])
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  cartId    Int
+  productId Int
+  quantity  Int     @default(1)
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 
-      @@unique([cartId, productId])
-    }
-
-
+  @@unique([cartId, productId])
+}
