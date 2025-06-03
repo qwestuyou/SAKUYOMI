@@ -26,7 +26,7 @@ passport.use(
                         data: {
                             name: profile.displayName,
                             email,
-                            password: "google_oauth", // метка, что это oauth
+                            password: "google_oauth",
                         },
                     });
                 }
