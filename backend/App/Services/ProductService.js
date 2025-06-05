@@ -2,13 +2,13 @@ import prisma from "../../prisma/client.js";
 
 const ProductService = {
     getAll() {
-        return prisma.product.findMany({ include: { category: true } });
+        return prisma.product.findMany({include: {category: true}});
     },
 
     getById(id) {
         return prisma.product.findUnique({
-            where: { id },
-            include: { category: true },
+            where: {id},
+            include: {category: true},
         });
     },
 
@@ -38,7 +38,7 @@ const ProductService = {
 
     update(id, data) {
         return prisma.product.update({
-            where: { id },
+            where: {id},
             data: {
                 name: data.name,
                 description: data.description,
@@ -62,10 +62,10 @@ const ProductService = {
     },
 
     async remove(id) {
-        await prisma.review.deleteMany({ where: { productId: id } });
-        await prisma.orderItem.deleteMany({ where: { productId: id } });
-        await prisma.wishlist.deleteMany({ where: { productId: id } });
-        return prisma.product.delete({ where: { id } });
+        await prisma.review.deleteMany({where: {productId: id}});
+        await prisma.orderItem.deleteMany({where: {productId: id}});
+        await prisma.wishlist.deleteMany({where: {productId: id}});
+        return prisma.product.delete({where: {id}});
     }
 };
 

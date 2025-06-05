@@ -1,7 +1,7 @@
 import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { FaTimes } from "react-icons/fa";
-import { Range } from "react-range";
+import {motion, AnimatePresence} from "framer-motion";
+import {FaTimes} from "react-icons/fa";
+import {Range} from "react-range";
 
 const FiltersPanel = ({
                           isFiltersOpen,
@@ -30,7 +30,6 @@ const FiltersPanel = ({
                           resetFilters,
                           catalogStyles,
                       }) => {
-    // Handle manual price input
     const handlePriceInput = (index, value) => {
         const newPrice = [...priceRange];
         newPrice[index] = Math.max(0, Math.min(10000, Number(value) || 0));
@@ -44,20 +43,20 @@ const FiltersPanel = ({
             {isFiltersOpen && (
                 <motion.div
                     className={`mb-6 ${catalogStyles.modalBg} rounded-2xl shadow-xl p-8 z-40 border ${catalogStyles.modalBorder} backdrop-blur-sm bg-opacity-90`}
-                    initial={{ opacity: 0, y: -50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -50 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    initial={{opacity: 0, y: -50}}
+                    animate={{opacity: 1, y: 0}}
+                    exit={{opacity: 0, y: -50}}
+                    transition={{duration: 0.4, ease: "easeOut"}}
                 >
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="font-bold text-xl text-gray-800">Filters</h3>
                         <motion.button
                             onClick={() => setIsFiltersOpen(false)}
                             className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                            whileHover={{scale: 1.1}}
+                            whileTap={{scale: 0.9}}
                         >
-                            <FaTimes className="text-gray-600" />
+                            <FaTimes className="text-gray-600"/>
                         </motion.button>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -86,7 +85,7 @@ const FiltersPanel = ({
                                     max={10000}
                                     values={priceRange}
                                     onChange={(values) => setPriceRange(values)}
-                                    renderTrack={({ props, children }) => (
+                                    renderTrack={({props, children}) => (
                                         <div
                                             {...props}
                                             className="h-2 w-full bg-gray-200 rounded-lg"
@@ -104,7 +103,7 @@ const FiltersPanel = ({
                                             {children}
                                         </div>
                                     )}
-                                    renderThumb={({ props, index }) => (
+                                    renderThumb={({props, index}) => (
                                         <div
                                             {...props}
                                             className="h-5 w-5 bg-[#f59c9e] rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-[#f59c9e] focus:ring-offset-2"
@@ -135,8 +134,8 @@ const FiltersPanel = ({
                                                     ? "bg-[#f59c9e] border-[#f59c9e] text-white"
                                                     : `${catalogStyles.inputBorder} ${catalogStyles.inputBg} hover:bg-gray-100`
                                             }`}
-                                            whileHover={{ scale: 1.1, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
-                                            whileTap={{ scale: 0.95 }}
+                                            whileHover={{scale: 1.1, boxShadow: "0 4px 12px rgba(0,0,0,0.1)"}}
+                                            whileTap={{scale: 0.95}}
                                         >
                                             {size}
                                         </motion.button>
@@ -152,7 +151,7 @@ const FiltersPanel = ({
                                     value={languageFilter}
                                     onChange={(e) => setLanguageFilter(e.target.value)}
                                     className={`w-full border rounded-lg p-3 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} focus:ring-2 focus:ring-[#f59c9e] focus:border-transparent transition-all duration-300`}
-                                    whileHover={{ scale: 1.02 }}
+                                    whileHover={{scale: 1.02}}
                                 >
                                     <option value="">All</option>
                                     <option value="Japanese">Japanese</option>
@@ -168,7 +167,7 @@ const FiltersPanel = ({
                                 value={materialFilter}
                                 onChange={(e) => setMaterialFilter(e.target.value)}
                                 className={`w-full border rounded-lg p-3 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} focus:ring-2 focus:ring-[#f59c9e] focus:border-transparent transition-all duration-300`}
-                                whileHover={{ scale: 1.02 }}
+                                whileHover={{scale: 1.02}}
                             >
                                 <option value="">All</option>
                                 <option value="Cotton">Cotton</option>
@@ -183,7 +182,7 @@ const FiltersPanel = ({
                                 value={brandFilter}
                                 onChange={(e) => setBrandFilter(e.target.value)}
                                 className={`w-full border rounded-lg p-3 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} focus:ring-2 focus:ring-[#f59c9e] focus:border-transparent transition-all duration-300`}
-                                whileHover={{ scale: 1.02 }}
+                                whileHover={{scale: 1.02}}
                             >
                                 <option value="">All</option>
                                 <option value="Bandai">Bandai</option>
@@ -200,8 +199,8 @@ const FiltersPanel = ({
                                         key={star}
                                         onClick={() => setRatingFilter(ratingFilter === star ? 0 : star)}
                                         className={`text-2xl ${ratingFilter >= star ? "text-yellow-400" : "text-gray-300"} transition-colors duration-200`}
-                                        whileHover={{ scale: 1.3, rotate: 10 }}
-                                        whileTap={{ scale: 0.9 }}
+                                        whileHover={{scale: 1.3, rotate: 10}}
+                                        whileTap={{scale: 0.9}}
                                     >
                                         ★
                                     </motion.button>
@@ -214,7 +213,7 @@ const FiltersPanel = ({
                             <div className="flex gap-4">
                                 <motion.label
                                     className="flex items-center gap-2 cursor-pointer"
-                                    whileHover={{ scale: 1.05 }}
+                                    whileHover={{scale: 1.05}}
                                 >
                                     <input
                                         type="radio"
@@ -227,7 +226,7 @@ const FiltersPanel = ({
                                 </motion.label>
                                 <motion.label
                                     className="flex items-center gap-2 cursor-pointer"
-                                    whileHover={{ scale: 1.05 }}
+                                    whileHover={{scale: 1.05}}
                                 >
                                     <input
                                         type="radio"
@@ -240,7 +239,7 @@ const FiltersPanel = ({
                                 </motion.label>
                                 <motion.label
                                     className="flex items-center gap-2 cursor-pointer"
-                                    whileHover={{ scale: 1.05 }}
+                                    whileHover={{scale: 1.05}}
                                 >
                                     <input
                                         type="radio"
@@ -264,9 +263,9 @@ const FiltersPanel = ({
                                         className={`w-10 h-10 rounded-full border-2 transition-all duration-300 ${
                                             colorFilter === color ? "border-[#f59c9e] scale-110" : "border-gray-200 hover:border-gray-400"
                                         }`}
-                                        style={{ backgroundColor: color.toLowerCase() }}
-                                        whileHover={{ scale: 1.2, boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
-                                        whileTap={{ scale: 0.9 }}
+                                        style={{backgroundColor: color.toLowerCase()}}
+                                        whileHover={{scale: 1.2, boxShadow: "0 4px 12px rgba(0,0,0,0.2)"}}
+                                        whileTap={{scale: 0.9}}
                                         title={color}
                                     />
                                 ))}
@@ -279,7 +278,7 @@ const FiltersPanel = ({
                                 value={ageRatingFilter}
                                 onChange={(e) => setAgeRatingFilter(e.target.value)}
                                 className={`w-full border rounded-lg p-3 ${catalogStyles.inputBg} ${catalogStyles.inputBorder} focus:ring-2 focus:ring-[#f59c9e] focus:border-transparent transition-all duration-300`}
-                                whileHover={{ scale: 1.02 }}
+                                whileHover={{scale: 1.02}}
                             >
                                 <option value="">All</option>
                                 <option value="13+">13+</option>
@@ -296,8 +295,8 @@ const FiltersPanel = ({
                                         className={`inline-flex items-center px-4 py-2 rounded-full ${catalogStyles.featureTagBg} text-sm cursor-pointer transition-all duration-300 ${
                                             featuresFilter.includes(feature) ? "ring-2 ring-[#f59c9e] bg-[#f59c9e] text-white" : "bg-gray-100 hover:bg-gray-200"
                                         }`}
-                                        whileHover={{ scale: 1.1, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}
-                                        whileTap={{ scale: 0.95 }}
+                                        whileHover={{scale: 1.1, boxShadow: "0 4px 12px rgba(0,0,0,0.1)"}}
+                                        whileTap={{scale: 0.95}}
                                     >
                                         <input
                                             type="checkbox"
@@ -314,16 +313,16 @@ const FiltersPanel = ({
                                                 featuresFilter.includes(feature) ? "bg-white border-white" : "border-gray-400"
                                             }`}
                                         >
-                      {featuresFilter.includes(feature) && (
-                          <svg className="w-4 h-4 text-[#f59c9e]" viewBox="0 0 20 20" fill="currentColor">
-                              <path
-                                  fillRule="evenodd"
-                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                  clipRule="evenodd"
-                              />
-                          </svg>
-                      )}
-                    </span>
+                                        {featuresFilter.includes(feature) && (
+                                            <svg className="w-4 h-4 text-[#f59c9e]" viewBox="0 0 20 20" fill="currentColor">
+                                                <path
+                                                  fillRule="evenodd"
+                                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                  clipRule="evenodd"
+                                                />
+                                            </svg>
+                                        )}
+                                        </span>
                                         {feature}
                                     </motion.label>
                                 ))}
@@ -334,8 +333,8 @@ const FiltersPanel = ({
                         <motion.button
                             onClick={resetFilters}
                             className="px-6 py-2 text-sm rounded-lg border border-[#f59c9e] text-[#f59c9e] hover:bg-[#f59c9e] hover:text-white transition-all duration-300"
-                            whileHover={{ scale: 1.1, boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={{scale: 1.1, boxShadow: "0 4px 12px rgba(0,0,0,0.2)"}}
+                            whileTap={{scale: 0.95}}
                         >
                             Reset All Filters
                         </motion.button>

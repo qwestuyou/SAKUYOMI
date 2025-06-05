@@ -21,22 +21,22 @@ const app = express();
 const __dirname = path.resolve();
 
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
 }));
 
 app.use(express.json());
 app.use(cookieParser());
 
 app.use(session({
-  secret: process.env.JWT_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: false,
-    httpOnly: true,
-    sameSite: "lax",
-  },
+    secret: process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false,
+        httpOnly: true,
+        sameSite: "lax",
+    },
 }));
 
 app.use(passport.initialize());
@@ -56,5 +56,5 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Сервер запущен на http://localhost:${PORT}`);
+    console.log(`The server is running on http://localhost:${PORT}`);
 });

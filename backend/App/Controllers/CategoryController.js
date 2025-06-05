@@ -6,7 +6,7 @@ const CategoryController = {
             const categories = await CategoryService.getAll();
             res.json(categories);
         } catch (error) {
-            res.status(500).json({ error: "Failed to fetch categories", message: error.message });
+            res.status(500).json({error: "Failed to fetch categories", message: error.message});
         }
     },
 };

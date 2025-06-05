@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "../context/ThemeContext";
+import React, {useEffect, useState} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {motion, AnimatePresence} from "framer-motion";
+import {useTheme} from "../context/ThemeContext";
 
-export default function UserOrders({ cardStyle }) {
+export default function UserOrders({cardStyle}) {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeOrder, setActiveOrder] = useState(null);
-    const { themeStyles } = useTheme();
+    const {themeStyles} = useTheme();
     const styles = themeStyles.profile;
     const modalStyles = themeStyles.modal;
     const cartStyles = themeStyles.cart;
@@ -18,7 +18,7 @@ export default function UserOrders({ cardStyle }) {
             try {
                 const token = localStorage.getItem("access_token");
                 const res = await fetch("/api/orders", {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: {Authorization: `Bearer ${token}`},
                 });
                 const data = await res.json();
                 setOrders(data);
@@ -82,16 +82,16 @@ export default function UserOrders({ cardStyle }) {
                 {activeOrder && (
                     <motion.div
                         className={modalStyles.overlay}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        exit={{opacity: 0}}
                     >
                         <motion.div
                             className={`${modalStyles.content} max-w-2xl max-h-[80vh] overflow-y-auto`}
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            transition={{ duration: 0.2 }}
+                            initial={{scale: 0.9, opacity: 0}}
+                            animate={{scale: 1, opacity: 1}}
+                            exit={{scale: 0.9, opacity: 0}}
+                            transition={{duration: 0.2}}
                         >
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className={`${modalStyles.title} !text-left`}>
@@ -149,9 +149,9 @@ export default function UserOrders({ cardStyle }) {
                             {activeOrder.status === "paid" && activeOrder.fullName && (
                                 <motion.div
                                     className="mt-6 text-sm text-gray-700 bg-gray-50 p-4 rounded-xl border border-gray-200"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.3 }}
+                                    initial={{opacity: 0}}
+                                    animate={{opacity: 1}}
+                                    transition={{duration: 0.3}}
                                 >
                                     <p className="font-semibold mb-2 text-gray-800">Shipping address:</p>
                                     <p>{activeOrder.fullName}</p>

@@ -22,7 +22,7 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log("✅ Категории успешно добавлены!");
+  console.log("Categories added successfully!");
 }
 
 main()

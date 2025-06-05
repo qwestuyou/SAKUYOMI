@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import { FaShoppingCart, FaTimes, FaPlus, FaMinus } from 'react-icons/fa';
-import { useCart } from '../context/CartContext';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../context/ThemeContext';
+import React, {useState} from "react";
+import {FaShoppingCart, FaTimes, FaPlus, FaMinus} from "react-icons/fa";
+import {useCart} from "../context/CartContext";
+import {motion, AnimatePresence} from "framer-motion";
+import {useTheme} from "../context/ThemeContext";
+import {useNavigate} from "react-router-dom";
 
 export default function CartIcon() {
-    const { cartItems, removeFromCart, updateQuantity, clearCart } = useCart();
+    const {cartItems, removeFromCart, updateQuantity, clearCart} = useCart();
     const [isOpen, setIsOpen] = useState(false);
-    const { themeStyles } = useTheme();
+    const {themeStyles} = useTheme();
     const cartStyles = themeStyles.cart;
+    const navigate = useNavigate();
 
     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cartItems.reduce((sum, item) => sum + item.quantity * item.product.price, 0);
@@ -37,10 +39,11 @@ export default function CartIcon() {
             });
 
             const data = await res.json();
-            if (!res.ok) throw new Error(data.message);
+            if (!res.ok) throw new Error(data.message || "Checkout failed");
 
+            clearCart();
             setIsOpen(false);
-            alert("Checkout completed successfully.");
+            navigate("/profile?tab=orders");
         } catch (err) {
             console.error("Checkout failed:", err);
             alert("Failed to complete checkout.");
@@ -52,14 +55,15 @@ export default function CartIcon() {
             <motion.button
                 onClick={() => setIsOpen(true)}
                 className="fixed bottom-6 right-6 bg-[#f59c9e] text-white p-4 rounded-full shadow-xl z-50 hover:scale-110 transition-transform duration-300"
-                whileTap={{ scale: 0.95 }}
+                whileTap={{scale: 0.95}}
                 aria-label="Open cart"
             >
-                <FaShoppingCart size={24} />
+                <FaShoppingCart size={24}/>
                 {totalItems > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-xs rounded-full px-1.5 font-bold">
-                        {totalItems}
-                    </span>
+                    <span
+                        className="absolute -top-1.5 -right-1.5 bg-red-600 text-white text-xs rounded-full px-1.5 font-bold">
+            {totalItems}
+          </span>
                 )}
             </motion.button>
 
@@ -67,10 +71,10 @@ export default function CartIcon() {
                 {isOpen && (
                     <motion.div
                         className={`fixed bottom-0 right-0 sm:bottom-6 sm:right-6 w-full sm:w-[380px] max-h-[90vh] shadow-2xl rounded-t-3xl sm:rounded-3xl backdrop-blur-2xl border z-50 overflow-hidden ${cartStyles.bgMain}`}
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 50 }}
-                        transition={{ duration: 0.3 }}
+                        initial={{opacity: 0, y: 50}}
+                        animate={{opacity: 1, y: 0}}
+                        exit={{opacity: 0, y: 50}}
+                        transition={{duration: 0.3}}
                     >
                         <div className={`flex items-center justify-between p-4 border-b ${cartStyles.divider}`}>
                             <h2 className="text-lg font-semibold text-[#c97476]">Your Cart</h2>
@@ -79,7 +83,7 @@ export default function CartIcon() {
                                 className={`${cartStyles.closeBtn} transition`}
                                 aria-label="Close cart"
                             >
-                                <FaTimes size={20} />
+                                <FaTimes size={20}/>
                             </button>
                         </div>
 
@@ -107,7 +111,7 @@ export default function CartIcon() {
                                                         className="px-2 py-1 rounded-full bg-pink-100 hover:bg-pink-200 text-sm"
                                                         aria-label="Decrease quantity"
                                                     >
-                                                        <FaMinus size={10} />
+                                                        <FaMinus size={10}/>
                                                     </button>
                                                     <span className="text-sm">{item.quantity}</span>
                                                     <button
@@ -115,7 +119,7 @@ export default function CartIcon() {
                                                         className="px-2 py-1 rounded-full bg-pink-100 hover:bg-pink-200 text-sm"
                                                         aria-label="Increase quantity"
                                                     >
-                                                        <FaPlus size={10} />
+                                                        <FaPlus size={10}/>
                                                     </button>
                                                 </div>
                                             </div>

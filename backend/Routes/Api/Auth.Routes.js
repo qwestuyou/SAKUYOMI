@@ -10,7 +10,7 @@ router.post("/login", AuthController.login);
 router.post("/logout", AuthController.logout);
 router.get("/me", AuthMiddleware, AuthController.me);
 
-router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+router.get("/google", passport.authenticate("google", {scope: ["profile", "email"]}));
 router.get(
     "/google/callback",
     passport.authenticate("google", {
@@ -18,7 +18,7 @@ router.get(
         failureRedirect: `${process.env.FRONTEND_URL}/login`,
     }),
     (req, res) => {
-        const { token, user } = req.user;
+        const {token, user} = req.user;
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
@@ -37,7 +37,7 @@ router.get(
         failureRedirect: `${process.env.FRONTEND_URL}/login`,
     }),
     (req, res) => {
-        const { token, user } = req.user;
+        const {token, user} = req.user;
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",

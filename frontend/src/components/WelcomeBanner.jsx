@@ -1,8 +1,8 @@
 import React from "react";
-import { useTheme } from "../context/ThemeContext";
+import {useTheme} from "../context/ThemeContext";
 
 export default function WelcomeBanner() {
-    const { theme } = useTheme();
+    const {theme} = useTheme();
 
     const videoSrc =
         theme === "dark"
@@ -25,7 +25,7 @@ export default function WelcomeBanner() {
                 loop
                 playsInline
             >
-                <source src={videoSrc} type="video/mp4" />
+                <source src={videoSrc} type="video/mp4"/>
                 Your browser does not support the video tag.
             </video>
 

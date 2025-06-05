@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useTheme } from "../context/ThemeContext";
-import { useNotification } from "../components/Notification";
+import React, {useEffect, useState} from "react";
+import {useParams, useNavigate} from "react-router-dom";
+import {motion} from "framer-motion";
+import {useTheme} from "../context/ThemeContext";
+import {useNotification} from "../components/Notification";
 
 export default function EditProduct() {
-    const { id } = useParams();
+    const {id} = useParams();
     const navigate = useNavigate();
-    const { themeStyles } = useTheme();
+    const {themeStyles} = useTheme();
     const notify = useNotification();
     const formStyles = themeStyles.form;
 
@@ -52,7 +52,7 @@ export default function EditProduct() {
         try {
             const res = await fetch(`/api/products/${id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 credentials: "include",
                 body: JSON.stringify({
                     ...formData,
@@ -83,25 +83,25 @@ export default function EditProduct() {
         <div className={`${themeStyles.pageBg} min-h-screen py-16 px-4`}>
             <motion.div
                 className={`max-w-3xl mx-auto p-8 rounded-3xl border shadow-2xl ${themeStyles.modalBg} ${themeStyles.modalBorder} backdrop-blur-xl`}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                initial={{opacity: 0, y: 30}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5}}
             >
                 <h2 className={`text-3xl font-bold mb-6 text-center ${themeStyles.headingColor}`}>
                     Edit Product
                 </h2>
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {[
-                        { name: "name", placeholder: "Name", type: "text" },
-                        { name: "description", placeholder: "Description", type: "textarea" },
-                        { name: "price", placeholder: "Price", type: "number" },
-                        { name: "image", placeholder: "Image URL", type: "text" },
-                        { name: "anime", placeholder: "Anime", type: "text" },
-                        { name: "size", placeholder: "Size (S, M, L...)", type: "text" },
-                        { name: "material", placeholder: "Material", type: "text" },
-                        { name: "brand", placeholder: "Brand", type: "text" },
-                        { name: "color", placeholder: "Color", type: "text" },
-                        { name: "features", placeholder: "Features (comma-separated)", type: "text" },
+                        {name: "name", placeholder: "Name", type: "text"},
+                        {name: "description", placeholder: "Description", type: "textarea"},
+                        {name: "price", placeholder: "Price", type: "number"},
+                        {name: "image", placeholder: "Image URL", type: "text"},
+                        {name: "anime", placeholder: "Anime", type: "text"},
+                        {name: "size", placeholder: "Size (S, M, L...)", type: "text"},
+                        {name: "material", placeholder: "Material", type: "text"},
+                        {name: "brand", placeholder: "Brand", type: "text"},
+                        {name: "color", placeholder: "Color", type: "text"},
+                        {name: "features", placeholder: "Features (comma-separated)", type: "text"},
                     ].map((field) =>
                         field.type === "textarea" ? (
                             <textarea
@@ -186,7 +186,7 @@ export default function EditProduct() {
                             name="inStock"
                             checked={formData.inStock}
                             onChange={(e) =>
-                                setFormData((prev) => ({ ...prev, inStock: e.target.checked }))
+                                setFormData((prev) => ({...prev, inStock: e.target.checked}))
                             }
                             className="accent-[#f59c9e] w-5 h-5"
                         />
@@ -196,8 +196,8 @@ export default function EditProduct() {
                     <motion.button
                         type="submit"
                         className={`col-span-2 mt-4 py-3 px-6 rounded-full font-bold shadow-md transition-all text-white bg-[#f59c9e] hover:bg-[#e9898c]`}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{scale: 1.05}}
+                        whileTap={{scale: 0.95}}
                     >
                         Save Changes
                     </motion.button>

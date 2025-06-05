@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import {useEffect} from "react";
+import {useNavigate, useSearchParams} from "react-router-dom";
 
 export default function OAuthSuccess() {
     const navigate = useNavigate();

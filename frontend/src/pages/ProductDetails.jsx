@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import {useEffect, useState} from "react";
+import {useParams, useNavigate} from "react-router-dom";
+import {motion} from "framer-motion";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
-import { useCart } from "../context/CartContext";
-import { useNotification } from "../components/Notification";
+import {useAuth} from "../context/AuthContext";
+import {useTheme} from "../context/ThemeContext";
+import {useCart} from "../context/CartContext";
+import {useNotification} from "../components/Notification";
 
 export default function ProductDetails() {
-    const { id } = useParams();
-    const { themeStyles } = useTheme();
-    const { user } = useAuth();
-    const { addToCart } = useCart();
+    const {id} = useParams();
+    const {themeStyles} = useTheme();
+    const {user} = useAuth();
+    const {addToCart} = useCart();
     const notify = useNotification();
     const navigate = useNavigate();
 
@@ -73,7 +73,7 @@ export default function ProductDetails() {
         try {
             const res = await fetch("/api/reviews", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 credentials: "include",
                 body: JSON.stringify(newReview),
             });
@@ -84,14 +84,14 @@ export default function ProductDetails() {
                     setReviews(prev =>
                         prev.map(r =>
                             r.id === parentId
-                                ? { ...r, replies: [...r.replies, { ...added, user }] }
+                                ? {...r, replies: [...r.replies, {...added, user}]}
                                 : r
                         )
                     );
                     setReplyContent("");
                     setReplyingTo(null);
                 } else {
-                    setReviews(prev => [{ ...added, user }, ...prev]);
+                    setReviews(prev => [{...added, user}, ...prev]);
                     setContent("");
                     setRating(5);
                 }
@@ -135,17 +135,17 @@ export default function ProductDetails() {
 
     return (
         <div className={`${styles.bg} min-h-screen transition-colors duration-300 relative`}>
-            <Header />
+            <Header/>
 
             <div className="max-w-6xl mx-auto p-6">
                 <motion.button
                     onClick={() => navigate(-1)}
                     className={`inline-flex items-center gap-2 mb-6 ${styles.subText} px-6 py-3 rounded-full transition cursor-pointer border ${styles.border} hover:bg-[#f59c9e] hover:text-white`}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.2 }}
+                    whileHover={{scale: 1.05}}
+                    transition={{duration: 0.2}}
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
                     </svg>
                     Back
                 </motion.button>
@@ -153,9 +153,9 @@ export default function ProductDetails() {
 
             <motion.div
                 className="max-w-6xl mx-auto p-6 flex flex-col md:flex-row gap-8"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                transition={{duration: 0.5}}
             >
                 <img
                     src={product.image}
@@ -178,8 +178,8 @@ export default function ProductDetails() {
                         <motion.button
                             onClick={() => addToCart(product)}
                             className="group inline-flex items-center gap-2 px-6 py-3 rounded-full text-[#f59c9e] border border-[#f59c9e] hover:bg-[#f59c9e] hover:text-white font-semibold transition-all duration-300"
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.2 }}
+                            whileHover={{scale: 1.05}}
+                            transition={{duration: 0.2}}
                         >
                             <svg
                                 className="w-5 h-5"
@@ -188,7 +188,8 @@ export default function ProductDetails() {
                                 strokeWidth={2}
                                 viewBox="0 0 24 24"
                             >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.2 6H17m-7-6V6m0 0h4m-4 0v7" />
+                                <path strokeLinecap="round" strokeLinejoin="round"
+                                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.2 6H17m-7-6V6m0 0h4m-4 0v7"/>
                             </svg>
                             Add to Cart
                         </motion.button>
@@ -198,8 +199,8 @@ export default function ProductDetails() {
                                 <motion.button
                                     onClick={() => navigate(`/edit-product/${product.id}`)}
                                     className="group inline-flex items-center gap-2 px-6 py-3 rounded-full text-yellow-600 border border-yellow-500 hover:bg-yellow-500 hover:text-white font-semibold transition-all duration-300"
-                                    whileHover={{ scale: 1.05 }}
-                                    transition={{ duration: 0.2 }}
+                                    whileHover={{scale: 1.05}}
+                                    transition={{duration: 0.2}}
                                 >
                                     <svg
                                         className="w-5 h-5"
@@ -208,7 +209,8 @@ export default function ProductDetails() {
                                         strokeWidth={2}
                                         viewBox="0 0 24 24"
                                     >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828A2 2 0 019 17H6v-3a2 2 0 012-2z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round"
+                                              d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828A2 2 0 019 17H6v-3a2 2 0 012-2z"/>
                                     </svg>
                                     Edit
                                 </motion.button>
@@ -216,8 +218,8 @@ export default function ProductDetails() {
                                 <motion.button
                                     onClick={handleDelete}
                                     className="group inline-flex items-center gap-2 px-6 py-3 rounded-full text-red-600 border border-red-500 hover:bg-red-500 hover:text-white font-semibold transition-all duration-300"
-                                    whileHover={{ scale: 1.05 }}
-                                    transition={{ duration: 0.2 }}
+                                    whileHover={{scale: 1.05}}
+                                    transition={{duration: 0.2}}
                                 >
                                     <svg
                                         className="w-5 h-5"
@@ -226,7 +228,7 @@ export default function ProductDetails() {
                                         strokeWidth={2}
                                         viewBox="0 0 24 24"
                                     >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                     </svg>
                                     Delete
                                 </motion.button>
@@ -243,8 +245,8 @@ export default function ProductDetails() {
                         <motion.div
                             key={rp.id}
                             className={`${styles.card} p-4 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300`}
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.2 }}
+                            whileHover={{scale: 1.05}}
+                            transition={{duration: 0.2}}
                         >
                             <img
                                 src={rp.image}
@@ -265,9 +267,9 @@ export default function ProductDetails() {
                     <motion.form
                         onSubmit={(e) => handleSubmit(e)}
                         className={`space-y-4 mb-8 ${styles.card} p-6 rounded-xl shadow-md`}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.4 }}
+                        initial={{opacity: 0}}
+                        animate={{opacity: 1}}
+                        transition={{duration: 0.4}}
                     >
                         <textarea
                             value={content}
@@ -289,7 +291,7 @@ export default function ProductDetails() {
                             <motion.button
                                 type="submit"
                                 className={`px-6 py-3 rounded-lg ${styles.btn} hover:bg-[#f59c9e] hover:text-white transition-all duration-200`}
-                                whileHover={{ scale: 1.05 }}
+                                whileHover={{scale: 1.05}}
                             >
                                 Add Review
                             </motion.button>
@@ -302,9 +304,9 @@ export default function ProductDetails() {
                         <motion.li
                             key={review.id}
                             className={`${styles.card} p-6 rounded-2xl shadow-md border ${styles.border}`}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.4 }}
+                            initial={{opacity: 0}}
+                            animate={{opacity: 1}}
+                            transition={{duration: 0.4}}
                         >
                             <div className="flex justify-between items-center mb-4">
                                 <div className="flex items-center gap-4">
@@ -330,7 +332,7 @@ export default function ProductDetails() {
                                             setReplyingTo(replyingTo === review.id ? null : review.id)
                                         }
                                         className="text-sm text-[#f59c9e] hover:underline"
-                                        whileHover={{ scale: 1.05 }}
+                                        whileHover={{scale: 1.05}}
                                     >
                                         {replyingTo === review.id ? "Cancel" : "Reply"}
                                     </motion.button>
@@ -354,7 +356,7 @@ export default function ProductDetails() {
                                             }
                                         }}
                                         className="text-sm text-red-500 hover:underline"
-                                        whileHover={{ scale: 1.05 }}
+                                        whileHover={{scale: 1.05}}
                                     >
                                         Delete
                                     </motion.button>
@@ -376,7 +378,7 @@ export default function ProductDetails() {
                                     <motion.button
                                         type="submit"
                                         className="px-4 py-2 rounded bg-[#f59c9e] text-white text-sm"
-                                        whileHover={{ scale: 1.05 }}
+                                        whileHover={{scale: 1.05}}
                                     >
                                         Submit Reply
                                     </motion.button>
@@ -408,7 +410,7 @@ export default function ProductDetails() {
                 </ul>
             </div>
 
-            <Footer />
+            <Footer/>
         </div>
     );
 }

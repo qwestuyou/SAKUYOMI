@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
           setUser(data.user);
         }
       } catch (err) {
-        console.error("Ошибка при проверке пользователя", err);
+        console.error("User verification error", err);
       } finally {
         setLoading(false);
       }

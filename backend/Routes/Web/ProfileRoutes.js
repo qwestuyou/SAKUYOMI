@@ -16,10 +16,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Обновление только аватарки
 router.post("/avatar", AuthMiddleware, upload.single("avatar"), ProfileController.updateAvatar);
-
-// Обновление имени, почты, аватарки и пароля
 router.post("/update", AuthMiddleware, upload.single("avatar"), ProfileController.updateProfile);
 
 export default router;

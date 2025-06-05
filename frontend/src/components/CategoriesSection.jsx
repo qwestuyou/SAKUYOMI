@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { useTheme } from "../context/ThemeContext";
-import { motion, AnimatePresence } from "framer-motion";
+import React, {useState, useEffect} from "react";
+import {useTheme} from "../context/ThemeContext";
+import {motion, AnimatePresence} from "framer-motion";
 
-const GlowingImage = ({ src, alt, glowColor }) => {
+const GlowingImage = ({src, alt, glowColor}) => {
     const [glow, setGlow] = useState(false);
 
     return (
@@ -38,7 +38,7 @@ const GlowingImage = ({ src, alt, glowColor }) => {
 };
 
 export default function CategoriesSection() {
-    const { theme, themeStyles } = useTheme();
+    const {theme, themeStyles} = useTheme();
     const [categories, setCategories] = useState([]);
     const categoriesStyles = themeStyles.categories;
 
@@ -55,7 +55,7 @@ export default function CategoriesSection() {
         >
             {/* Фоновая анимация частиц */}
             <div className="absolute inset-0 z-0 pointer-events-none">
-                {Array.from({ length: 15 }).map((_, i) => (
+                {Array.from({length: 15}).map((_, i) => (
                     <motion.div
                         key={i}
                         className="absolute w-2 h-2 rounded-full bg-pink-300 blur-sm opacity-50"
@@ -100,10 +100,10 @@ export default function CategoriesSection() {
                     <motion.div
                         key={category.id}
                         variants={{
-                            hidden: { opacity: 0, y: 40, scale: 0.95 },
-                            visible: { opacity: 1, y: 0, scale: 1 },
+                            hidden: {opacity: 0, y: 40, scale: 0.95},
+                            visible: {opacity: 1, y: 0, scale: 1},
                         }}
-                        transition={{ duration: 0.6, ease: "easeOut" }}
+                        transition={{duration: 0.6, ease: "easeOut"}}
                         className={`${categoriesStyles.cardBg} p-6 rounded-3xl shadow-lg flex flex-col items-center hover:shadow-xl transition-all duration-500 hover:-translate-y-2`}
                     >
                         <GlowingImage

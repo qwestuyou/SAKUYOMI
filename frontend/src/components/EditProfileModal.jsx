@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useNotification } from "./Notification";
-import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
+import React, {useState} from "react";
+import {motion, AnimatePresence} from "framer-motion";
+import {useNotification} from "./Notification";
+import {useAuth} from "../context/AuthContext";
+import {useTheme} from "../context/ThemeContext";
 
-export default function EditProfileModal({ isOpen, onClose }) {
-    const { user, setUser } = useAuth();
+export default function EditProfileModal({isOpen, onClose}) {
+    const {user, setUser} = useAuth();
     const notify = useNotification();
-    const { themeStyles } = useTheme();
+    const {themeStyles} = useTheme();
 
     const styles = themeStyles.modal;
 
@@ -28,7 +28,7 @@ export default function EditProfileModal({ isOpen, onClose }) {
     };
 
     const handleInputChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        setForm({...form, [e.target.name]: e.target.value});
     };
 
     const handleSaveChanges = async () => {
@@ -66,15 +66,15 @@ export default function EditProfileModal({ isOpen, onClose }) {
             {isOpen && (
                 <motion.div
                     className={styles.overlay}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    initial={{opacity: 0}}
+                    animate={{opacity: 1}}
+                    exit={{opacity: 0}}
                 >
                     <motion.div
                         className={styles.content}
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.8, opacity: 0 }}
+                        initial={{scale: 0.8, opacity: 0}}
+                        animate={{scale: 1, opacity: 1}}
+                        exit={{scale: 0.8, opacity: 0}}
                     >
                         <h3 className={styles.title}>Update Profile</h3>
 
@@ -96,16 +96,18 @@ export default function EditProfileModal({ isOpen, onClose }) {
                         </div>
 
                         <label className={styles.label}>Name</label>
-                        <input name="name" value={form.name} onChange={handleInputChange} className={styles.input} />
+                        <input name="name" value={form.name} onChange={handleInputChange} className={styles.input}/>
 
                         <label className={styles.label}>Email</label>
-                        <input name="email" value={form.email} onChange={handleInputChange} className={styles.input} />
+                        <input name="email" value={form.email} onChange={handleInputChange} className={styles.input}/>
 
                         <label className={styles.label}>Old Password</label>
-                        <input name="oldPassword" type="password" value={form.oldPassword} onChange={handleInputChange} className={styles.input} />
+                        <input name="oldPassword" type="password" value={form.oldPassword} onChange={handleInputChange}
+                               className={styles.input}/>
 
                         <label className={styles.label}>New Password</label>
-                        <input name="newPassword" type="password" value={form.newPassword} onChange={handleInputChange} className={styles.input} />
+                        <input name="newPassword" type="password" value={form.newPassword} onChange={handleInputChange}
+                               className={styles.input}/>
 
                         <div className={styles.actions}>
                             <button onClick={handleSaveChanges} className={styles.saveBtn}>Save</button>

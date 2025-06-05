@@ -4,13 +4,13 @@ const ProfileController = {
     async updateAvatar(req, res) {
         try {
             if (!req.file) {
-                return res.status(400).json({ error: "No file uploaded" });
+                return res.status(400).json({error: "No file uploaded"});
             }
 
             const avatarUrl = `/uploads/avatars/${req.file.filename}`;
             const updatedUser = await ProfileService.setAvatar(req.user.id, avatarUrl);
 
-            res.json({ avatar: avatarUrl, user: updatedUser });
+            res.json({avatar: avatarUrl, user: updatedUser});
         } catch (error) {
             console.error("Update Avatar Error:", error);
             res.status(500).json({
@@ -24,7 +24,7 @@ const ProfileController = {
     async updateProfile(req, res) {
         try {
             const userId = req.user.id;
-            const { name, email, oldPassword, newPassword } = req.body;
+            const {name, email, oldPassword, newPassword} = req.body;
 
             let avatar = req.user.avatar;
             if (req.file) {
@@ -40,10 +40,10 @@ const ProfileController = {
                 newPassword,
             });
 
-            res.json({ user: updatedUser });
+            res.json({user: updatedUser});
         } catch (error) {
             console.error("Update Profile Error:", error);
-            res.status(400).json({ message: error.message });
+            res.status(400).json({message: error.message});
         }
     },
 };

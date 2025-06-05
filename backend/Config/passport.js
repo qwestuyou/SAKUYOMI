@@ -1,6 +1,6 @@
 import passport from "passport";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { Strategy as DiscordStrategy } from "passport-discord";
+import {Strategy as GoogleStrategy} from "passport-google-oauth20";
+import {Strategy as DiscordStrategy} from "passport-discord";
 import dotenv from "dotenv";
 import prisma from "../prisma/client.js";
 import AuthService from "../App/Services/AuthService.js";
@@ -19,7 +19,7 @@ passport.use(
                 const email = profile.emails?.[0]?.value;
                 if (!email) return done(new Error("No email found in Google profile"), null);
 
-                let user = await prisma.user.findUnique({ where: { email } });
+                let user = await prisma.user.findUnique({where: {email}});
 
                 if (!user) {
                     user = await prisma.user.create({
@@ -32,7 +32,7 @@ passport.use(
                 }
 
                 const token = AuthService.generateToken(user.id);
-                done(null, { user, token });
+                done(null, {user, token});
             } catch (error) {
                 done(error, null);
             }
@@ -53,7 +53,7 @@ passport.use(
                 const email = profile.email;
                 if (!email) return done(new Error("No email found in Discord profile"), null);
 
-                let user = await prisma.user.findUnique({ where: { email } });
+                let user = await prisma.user.findUnique({where: {email}});
 
                 if (!user) {
                     user = await prisma.user.create({
@@ -66,7 +66,7 @@ passport.use(
                 }
 
                 const token = AuthService.generateToken(user.id);
-                done(null, { user, token });
+                done(null, {user, token});
             } catch (error) {
                 done(error, null);
             }

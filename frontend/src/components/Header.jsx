@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
-import { Moon, Sun } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, {useState, useRef, useEffect} from "react";
+import {Link, useNavigate} from "react-router-dom";
+import {useAuth} from "../context/AuthContext";
+import {useTheme} from "../context/ThemeContext";
+import {Moon, Sun} from "lucide-react";
+import {motion, AnimatePresence} from "framer-motion";
 
 export default function Header() {
-    const { user, logout } = useAuth();
-    const { theme, toggleTheme, themeStyles } = useTheme();
+    const {user, logout} = useAuth();
+    const {theme, toggleTheme, themeStyles} = useTheme();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
@@ -36,7 +36,7 @@ export default function Header() {
 
             <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between relative">
                 <Link to="/" className={`flex items-center gap-2 text-2xl font-bold ${themeStyles.textMain}`}>
-                    <img src="/images/sakura (3).png" alt="Logo" className="w-8 h-8" />
+                    <img src="/images/sakura (3).png" alt="Logo" className="w-8 h-8"/>
                     <span className="text-[#f59c9e]">SAKUYOMI</span>
                 </Link>
 
@@ -47,9 +47,9 @@ export default function Header() {
                         className="w-10 h-10 rounded-full border-2 border-pink-300 flex items-center justify-center hover:scale-110 transition-transform"
                     >
                         {theme === "dark" ? (
-                            <Sun className="text-yellow-300" />
+                            <Sun className="text-yellow-300"/>
                         ) : (
-                            <Moon className="text-[#f59c9e]" />
+                            <Moon className="text-[#f59c9e]"/>
                         )}
                     </button>
 
@@ -73,26 +73,26 @@ export default function Header() {
                             <AnimatePresence>
                                 {isDropdownOpen && (
                                     <motion.div
-                                        initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                                        transition={{ duration: 0.4, type: "spring", damping: 22 }}
+                                        initial={{opacity: 0, y: -20, scale: 0.9}}
+                                        animate={{opacity: 1, y: 0, scale: 1}}
+                                        exit={{opacity: 0, y: -10, scale: 0.95}}
+                                        transition={{duration: 0.4, type: "spring", damping: 22}}
                                         className={`absolute right-0 mt-2 w-40 overflow-hidden backdrop-blur-lg rounded-xl shadow-2xl z-50 border border-pink-100 ${themeStyles.dropdown.bg}`}
                                     >
                                         <div className="absolute inset-0 pointer-events-none z-[-1]">
                                             <motion.div
-                                                initial={{ y: -30, x: 10, opacity: 0.6 }}
-                                                animate={{ y: 90, x: -20, opacity: 0 }}
-                                                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                                                initial={{y: -30, x: 10, opacity: 0.6}}
+                                                animate={{y: 90, x: -20, opacity: 0}}
+                                                transition={{duration: 3, repeat: Infinity, ease: "easeInOut"}}
                                                 className="absolute w-5 h-5 bg-pink-300 rounded-full blur-sm opacity-60"
-                                                style={{ rotate: "45deg" }}
+                                                style={{rotate: "45deg"}}
                                             />
                                             <motion.div
-                                                initial={{ y: -20, x: 30, opacity: 0.5 }}
-                                                animate={{ y: 80, x: -10, opacity: 0 }}
-                                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                                initial={{y: -20, x: 30, opacity: 0.5}}
+                                                animate={{y: 80, x: -10, opacity: 0}}
+                                                transition={{duration: 4, repeat: Infinity, ease: "easeInOut"}}
                                                 className="absolute w-3 h-3 bg-pink-200 rounded-full blur-sm opacity-40"
-                                                style={{ rotate: "30deg" }}
+                                                style={{rotate: "30deg"}}
                                             />
                                         </div>
 

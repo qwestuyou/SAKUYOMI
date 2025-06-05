@@ -4,13 +4,13 @@ import bcrypt from "bcrypt";
 const ProfileService = {
     async setAvatar(userId, avatarUrl) {
         return prisma.user.update({
-            where: { id: userId },
-            data: { avatar: avatarUrl },
+            where: {id: userId},
+            data: {avatar: avatarUrl},
         });
     },
 
-    async updateProfile({ userId, name, email, avatar, oldPassword, newPassword }) {
-        const user = await prisma.user.findUnique({ where: { id: userId } });
+    async updateProfile({userId, name, email, avatar, oldPassword, newPassword}) {
+        const user = await prisma.user.findUnique({where: {id: userId}});
 
         if (!user) throw new Error("User not found");
 
@@ -29,7 +29,7 @@ const ProfileService = {
         }
 
         return await prisma.user.update({
-            where: { id: userId },
+            where: {id: userId},
             data: updateData,
         });
     },

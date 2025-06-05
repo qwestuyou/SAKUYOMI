@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useNotification } from "../components/Notification";
-import { useTheme } from "../context/ThemeContext";
-import { motion, AnimatePresence } from "framer-motion";
+import React, {useEffect, useState} from "react";
+import {useParams, useNavigate} from "react-router-dom";
+import {useNotification} from "../components/Notification";
+import {useTheme} from "../context/ThemeContext";
+import {motion, AnimatePresence} from "framer-motion";
 
 export default function CheckoutPage() {
-    const { id: orderId } = useParams();
+    const {id: orderId} = useParams();
     const notify = useNotification();
     const navigate = useNavigate();
-    const { themeStyles } = useTheme();
+    const {themeStyles} = useTheme();
     const styles = themeStyles.form;
     const buttonStyle = themeStyles.cart.cartButton;
 
@@ -29,7 +29,7 @@ export default function CheckoutPage() {
             try {
                 const token = localStorage.getItem("access_token");
                 const res = await fetch(`/api/orders/${orderId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: {Authorization: `Bearer ${token}`},
                 });
                 const data = await res.json();
                 setOrder(data);
@@ -44,7 +44,7 @@ export default function CheckoutPage() {
     }, [orderId, notify]);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData({...formData, [e.target.name]: e.target.value});
     };
 
     const handleSubmit = (e) => {
@@ -61,7 +61,7 @@ export default function CheckoutPage() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ ...formData, status: "paid" }),
+                body: JSON.stringify({...formData, status: "paid"}),
             });
 
             notify("Payment successful!", "success");
@@ -75,9 +75,9 @@ export default function CheckoutPage() {
         return (
             <motion.div
                 className="p-6 text-center text-gray-500 text-sm font-medium"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                transition={{duration: 0.3}}
             >
                 Loading checkout...
             </motion.div>
@@ -88,9 +88,9 @@ export default function CheckoutPage() {
         return (
             <motion.div
                 className="p-6 text-center text-red-500 text-sm font-medium"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                transition={{duration: 0.3}}
             >
                 Order not found
             </motion.div>
@@ -100,15 +100,15 @@ export default function CheckoutPage() {
     return (
         <motion.div
             className="min-h-screen bg-gradient-to-br from-[#fceaeb] via-[#ffe3e3] to-[#ffeaea] py-10 px-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4 }}
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            transition={{duration: 0.4}}
         >
             <motion.div
                 className="max-w-2xl mx-auto p-8 bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl border border-[#f59c9e]/30 relative"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
+                initial={{opacity: 0, y: 20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.4, ease: "easeOut"}}
             >
                 <h1 className="text-3xl font-bold mb-8 text-center text-[#e26d6f] tracking-tight">
                     🚚 Shipping Info — Order #{order.id}
@@ -178,8 +178,8 @@ export default function CheckoutPage() {
                     <motion.button
                         type="submit"
                         className={`${buttonStyle} w-full text-center py-3 bg-[#f59c9e] text-white rounded-xl shadow-md hover:bg-[#e88b8d] transition-all duration-300 text-sm font-semibold`}
-                        whileHover={{ scale: 1.05, boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{scale: 1.05, boxShadow: "0 4px 12px rgba(0,0,0,0.2)"}}
+                        whileTap={{scale: 0.95}}
                     >
                         Proceed to Payment
                     </motion.button>
@@ -191,18 +191,18 @@ export default function CheckoutPage() {
                             {/* BACKDROP */}
                             <motion.div
                                 className="fixed inset-0 bg-black/50 z-40"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.3 }}
+                                initial={{opacity: 0}}
+                                animate={{opacity: 1}}
+                                exit={{opacity: 0}}
+                                transition={{duration: 0.3}}
                             />
 
                             {/* MODAL */}
                             <motion.div
-                                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                                animate={{ scale: 1, opacity: 1, y: 0 }}
-                                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                                transition={{ duration: 0.3, ease: "easeOut" }}
+                                initial={{scale: 0.9, opacity: 0, y: 20}}
+                                animate={{scale: 1, opacity: 1, y: 0}}
+                                exit={{scale: 0.9, opacity: 0, y: 20}}
+                                transition={{duration: 0.3, ease: "easeOut"}}
                                 className="fixed z-50 inset-0 flex items-center justify-center"
                             >
                                 <div className="bg-white p-6 rounded-2xl max-w-sm w-full shadow-2xl">

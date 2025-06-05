@@ -1,11 +1,11 @@
 import React from "react";
-import { FaInstagram, FaTelegramPlane } from "react-icons/fa";
-import { FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
-import { SiTiktok } from "react-icons/si";
-import { useTheme } from "../context/ThemeContext";
+import {FaInstagram, FaTelegramPlane} from "react-icons/fa";
+import {FaPhone, FaEnvelope, FaMapMarkerAlt} from "react-icons/fa";
+import {SiTiktok} from "react-icons/si";
+import {useTheme} from "../context/ThemeContext";
 
 export default function Footer() {
-    const { theme, themeStyles } = useTheme();
+    const {theme, themeStyles} = useTheme();
     const footerStyles = themeStyles.footer;
 
     return (
@@ -26,10 +26,10 @@ export default function Footer() {
                         Contact
                     </h3>
                     <p className={`text-sm flex items-center gap-2 ${footerStyles.textMuted}`}>
-                        <FaPhone className={footerStyles.icon} /> +421 987 654 321
+                        <FaPhone className={footerStyles.icon}/> +421 987 654 321
                     </p>
                     <p className={`text-sm flex items-center gap-2 ${footerStyles.textMuted}`}>
-                        <FaEnvelope className={footerStyles.icon} /> hello@sakuyomi.store
+                        <FaEnvelope className={footerStyles.icon}/> hello@sakuyomi.store
                     </p>
                 </div>
 
@@ -38,13 +38,13 @@ export default function Footer() {
                         Stores
                     </h3>
                     <p className={`text-sm flex items-center gap-2 ${footerStyles.textMuted}`}>
-                        <FaMapMarkerAlt className={footerStyles.icon} /> Bratislava, Obchodná 23
+                        <FaMapMarkerAlt className={footerStyles.icon}/> Bratislava, Obchodná 23
                     </p>
                     <p className={`text-sm flex items-center gap-2 ${footerStyles.textMuted}`}>
-                        <FaMapMarkerAlt className={footerStyles.icon} /> Košice, Hlavná 12
+                        <FaMapMarkerAlt className={footerStyles.icon}/> Košice, Hlavná 12
                     </p>
                     <p className={`text-sm flex items-center gap-2 ${footerStyles.textMuted}`}>
-                        <FaMapMarkerAlt className={footerStyles.icon} /> Lviv, просп. Свободи 5
+                        <FaMapMarkerAlt className={footerStyles.icon}/> Lviv, просп. Свободи 5
                     </p>
                 </div>
 
@@ -54,28 +54,28 @@ export default function Footer() {
                     </h3>
                     <div className={`flex gap-4 text-2xl ${footerStyles.icon}`}>
                         <a
-                            href="https://instagram.com/твоя_страница"
+                            href="https://instagram.com/page"
                             target="_blank"
                             rel="noopener noreferrer"
                             className={`${footerStyles.hover} transition-colors duration-200`}
                         >
-                            <FaInstagram />
+                            <FaInstagram/>
                         </a>
                         <a
-                            href="https://tiktok.com/@твоя_страница"
+                            href="https://tiktok.com/@page"
                             target="_blank"
                             rel="noopener noreferrer"
                             className={`${footerStyles.hover} transition-colors duration-200`}
                         >
-                            <SiTiktok />
+                            <SiTiktok/>
                         </a>
                         <a
-                            href="https://t.me/твоя_страница"
+                            href="https://t.me/@username"
                             target="_blank"
                             rel="noopener noreferrer"
                             className={`${footerStyles.hover} transition-colors duration-200`}
                         >
-                            <FaTelegramPlane />
+                            <FaTelegramPlane/>
                         </a>
                     </div>
                 </div>
