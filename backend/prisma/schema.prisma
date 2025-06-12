@@ -19,21 +19,19 @@ model Product {
   reviews     Review[]
   cartItems   CartItem[]
 
-  // Для фильтров:
-  anime       String? // Название аниме (например, Naruto)
-  size        String? // Размер (S, M, L, XL и т.д.)
-  material    String? // Материал (хлопок, полиэстер, винил и т.п.)
-  language    String? // Язык (английский, японский, украинский)
-  brand       String? // Бренд или производитель
-  productType String? // Тип товара (фигурка, футболка, постер и т.п.)
-  rating      Float? // Средний рейтинг (например, 4.5)
-  inStock     Boolean @default(true) // Наличие на складе
-  color       String? // Цвет (если актуально)
-  gender      String? // Для одежды — "male", "female", "unisex"
-  ageRating   String? // Возрастные ограничения (например, "13+", "18+")
-  features    String? // Дополнительные характеристики, можно хранить как JSON или строку
+  anime       String?
+  size        String?
+  language    String?
+  productType String?
+  rating      Float?
+  inStock     Boolean     @default(true)
+  color       String?
+  gender      String?
+  ageRating   String?
+  coverType   String?
 
-  wishlists Wishlist[]
+  features    String?
+  wishlists   Wishlist[]
 }
 
 model Category {
@@ -100,7 +98,7 @@ model Review {
   product   Product  @relation(fields: [productId], references: [id])
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
-  parentId  Int? // Добавлено для вложенных комментариев
+  parentId  Int?
   parent    Review?  @relation("ReviewReplies", fields: [parentId], references: [id])
   replies   Review[] @relation("ReviewReplies")
 }
@@ -114,7 +112,7 @@ model Wishlist {
   user    User    @relation(fields: [userId], references: [id])
   product Product @relation(fields: [productId], references: [id])
 
-  @@unique([userId, productId]) // уникальность: один товар один раз в wishlist
+  @@unique([userId, productId])
 }
 
 model Cart {

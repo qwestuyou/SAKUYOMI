@@ -1,11 +1,12 @@
 import React from "react";
-import {Link} from "react-router-dom";
-import {motion} from "framer-motion";
-import {FaRegHeart, FaHeart, FaShoppingCart} from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { FaRegHeart, FaHeart, FaShoppingCart } from "react-icons/fa";
+import StarRating from "../CatalogComponents/StarRating";
 
-const ProductsGrid = ({currentProducts, wishlist, toggleWishlist, addToCart, catalogStyles}) => {
+const ProductsGrid = ({ currentProducts, wishlist, toggleWishlist, addToCart, catalogStyles }) => {
     const itemVariants = {
-        hidden: {opacity: 0, y: 20},
+        hidden: { opacity: 0, y: 20 },
         show: {
             opacity: 1,
             y: 0,
@@ -26,8 +27,8 @@ const ProductsGrid = ({currentProducts, wishlist, toggleWishlist, addToCart, cat
                     >
                         <motion.div
                             className="relative mb-4 flex justify-center"
-                            whileHover={{scale: 1.03}}
-                            transition={{duration: 0.3}}
+                            whileHover={{ scale: 1.03 }}
+                            transition={{ duration: 0.3 }}
                         >
                             <img
                                 src={product.image}
@@ -44,24 +45,51 @@ const ProductsGrid = ({currentProducts, wishlist, toggleWishlist, addToCart, cat
                                 aria-label={wishlist.includes(product.id) ? "Remove from wishlist" : "Add to wishlist"}
                                 title={wishlist.includes(product.id) ? "Remove from wishlist" : "Add to wishlist"}
                             >
-                                <motion.div animate={wishlist.includes(product.id) ? {scale: [1, 1.2, 1]} : {}}
-                                            transition={{duration: 0.3}}>
+                                <motion.div
+                                    animate={wishlist.includes(product.id) ? { scale: [1, 1.2, 1] } : {}}
+                                    transition={{ duration: 0.3 }}
+                                >
                                     {wishlist.includes(product.id) ? (
-                                        <FaHeart className="text-red-500"/>
+                                        <FaHeart className="text-red-500" />
                                     ) : (
                                         <FaRegHeart
-                                            className={`${catalogStyles.wishlistEmptyHeartColor} hover:text-red-400 transition-colors`}/>
+                                            className={`${catalogStyles.wishlistEmptyHeartColor} hover:text-red-400 transition-colors`}
+                                        />
                                     )}
                                 </motion.div>
                             </button>
                         </motion.div>
+
                         <div className="flex-1 flex flex-col justify-between">
                             <div className="mb-4">
                                 <h3 className="text-lg font-semibold mb-1 truncate">{product.name}</h3>
                                 <p className="text-sm opacity-70 line-clamp-2">{product.description}</p>
+
+                                {product.averageRating && (
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <StarRating rating={product.averageRating} />
+                                        <span className="text-sm text-gray-500">({product.averageRating})</span>
+                                    </div>
+                                )}
+
+                                {/* Наличие товара */}
+                                <div className="mt-2">
+                                    <span
+                                        className={`text-xs font-medium px-2 py-1 rounded-full ${
+                                            product.inStock
+                                                ? "bg-green-100 text-green-700"
+                                                : "bg-red-100 text-red-700"
+                                        }`}
+                                    >
+                                        {product.inStock ? "In stock" : "Not available"}
+                                    </span>
+                                </div>
                             </div>
+
                             <div className="flex items-center justify-between mt-auto">
-                                <p className={`font-bold ${catalogStyles.headingColor} text-xl leading-none`}>{product.price} ₴</p>
+                                <p className={`font-bold ${catalogStyles.headingColor} text-xl leading-none`}>
+                                    {product.price} ₴
+                                </p>
                                 <motion.button
                                     onClick={(e) => {
                                         e.preventDefault();
@@ -74,10 +102,10 @@ const ProductsGrid = ({currentProducts, wishlist, toggleWishlist, addToCart, cat
                                         scale: 1.05,
                                         boxShadow: "0 5px 15px rgba(245, 156, 158, 0.4)",
                                     }}
-                                    whileTap={{scale: 0.95}}
+                                    whileTap={{ scale: 0.95 }}
                                 >
-                                    <motion.span animate={{x: [0, 2, 0]}} transition={{repeat: Infinity, duration: 2}}>
-                                        <FaShoppingCart className="text-base"/>
+                                    <motion.span animate={{ x: [0, 2, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
+                                        <FaShoppingCart className="text-base" />
                                     </motion.span>
                                     <span>Add to cart</span>
                                 </motion.button>

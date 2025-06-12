@@ -16,15 +16,14 @@ export default function AddProduct() {
         categoryId: "",
         anime: "",
         size: "",
-        material: "",
         language: "",
-        brand: "",
         productType: "",
         rating: "",
         inStock: true,
         color: "",
         gender: "",
         ageRating: "",
+        coverType: "",
         features: "",
     });
 
@@ -66,15 +65,14 @@ export default function AddProduct() {
                     categoryId: "",
                     anime: "",
                     size: "",
-                    material: "",
                     language: "",
-                    brand: "",
                     productType: "",
                     rating: "",
                     inStock: true,
                     color: "",
                     gender: "",
                     ageRating: "",
+                    coverType: "",
                     features: "",
                 });
             } else {
@@ -105,8 +103,6 @@ export default function AddProduct() {
                         {name: "image", placeholder: "Image URL", type: "text"},
                         {name: "anime", placeholder: "Anime", type: "text"},
                         {name: "size", placeholder: "Size (S, M, L...)", type: "text"},
-                        {name: "material", placeholder: "Material", type: "text"},
-                        {name: "brand", placeholder: "Brand", type: "text"},
                         {name: "color", placeholder: "Color", type: "text"},
                         {name: "features", placeholder: "Features (comma-separated)", type: "text"},
                     ].map((field) =>
@@ -185,6 +181,17 @@ export default function AddProduct() {
                         <option value="0+">0+</option>
                         <option value="13+">13+</option>
                         <option value="18+">18+</option>
+                    </select>
+
+                    <select
+                        name="coverType"
+                        value={formData.coverType}
+                        onChange={handleChange}
+                        className={`p-3 rounded-xl ${formStyles.inputBg} ${formStyles.inputBorder}`}
+                    >
+                        <option value="">Cover Type (for manga)</option>
+                        <option value="soft">Soft</option>
+                        <option value="hard">Hard</option>
                     </select>
 
                     <label className="flex items-center gap-3 col-span-2 mt-2">

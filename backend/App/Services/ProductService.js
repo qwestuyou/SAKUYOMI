@@ -1,8 +1,29 @@
 import prisma from "../../prisma/client.js";
 
 const ProductService = {
-    getAll() {
-        return prisma.product.findMany({include: {category: true}});
+    async getAll() {
+        const products = await prisma.product.findMany({
+            include: {
+                category: true,
+                reviews: {
+                    select: {
+                        rating: true,
+                    },
+                },
+            },
+        });
+
+        return products.map((product) => {
+            const ratings = product.reviews.map((r) => r.rating);
+            const averageRating = ratings.length
+                ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length
+                : null;
+
+            return {
+                ...product,
+                averageRating: averageRating ? Math.round(averageRating * 10) / 10 : null,
+            };
+        });
     },
 
     getById(id) {
@@ -22,15 +43,14 @@ const ProductService = {
                 categoryId: parseInt(data.categoryId),
                 anime: data.anime || null,
                 size: data.size || null,
-                material: data.material || null,
                 language: data.language || null,
-                brand: data.brand || null,
                 productType: data.productType || null,
                 rating: data.rating ? parseFloat(data.rating) : null,
                 inStock: typeof data.inStock === "boolean" ? data.inStock : true,
                 color: data.color || null,
                 gender: data.gender || null,
                 ageRating: data.ageRating || null,
+                coverType: data.coverType || null,
                 features: data.features || null,
             },
         });
@@ -47,15 +67,14 @@ const ProductService = {
                 categoryId: parseInt(data.categoryId),
                 anime: data.anime || null,
                 size: data.size || null,
-                material: data.material || null,
                 language: data.language || null,
-                brand: data.brand || null,
                 productType: data.productType || null,
                 rating: data.rating ? parseFloat(data.rating) : null,
                 inStock: typeof data.inStock === "boolean" ? data.inStock : true,
                 color: data.color || null,
                 gender: data.gender || null,
                 ageRating: data.ageRating || null,
+                coverType: data.coverType || null,
                 features: data.features || null,
             },
         });

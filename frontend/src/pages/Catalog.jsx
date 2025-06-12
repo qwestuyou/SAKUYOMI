@@ -29,12 +29,13 @@ export default function Catalog() {
     const [priceRange, setPriceRange] = useState([0, 10000]);
     const [sizeFilter, setSizeFilter] = useState("");
     const [languageFilter, setLanguageFilter] = useState("");
-    const [materialFilter, setMaterialFilter] = useState("");
-    const [brandFilter, setBrandFilter] = useState("");
     const [ratingFilter, setRatingFilter] = useState(0);
     const [inStockFilter, setInStockFilter] = useState(null);
     const [colorFilter, setColorFilter] = useState("");
     const [ageRatingFilter, setAgeRatingFilter] = useState("");
+    const [genderFilter, setGenderFilter] = useState("");
+    const [coverTypeFilter, setCoverTypeFilter] = useState("");
+    const [animeFilter, setAnimeFilter] = useState("");
     const [featuresFilter, setFeaturesFilter] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
@@ -109,12 +110,14 @@ export default function Catalog() {
         }
 
         filtered = filtered.filter((product) => {
+            if (animeFilter && (!product.anime || !product.anime.toLowerCase().includes(animeFilter.toLowerCase()))) return false;
             if (product.price < priceRange[0] || product.price > priceRange[1]) return false;
             if (currentCategory === "clothing" && sizeFilter && product.size !== sizeFilter) return false;
+            if (currentCategory === "clothing" && genderFilter && product.gender !== genderFilter) return false;
             if (currentCategory === "manga" && languageFilter && product.language !== languageFilter) return false;
-            if (materialFilter && product.material !== materialFilter) return false;
-            if (brandFilter && product.brand !== brandFilter) return false;
-            if (ratingFilter && (!product.rating || product.rating < ratingFilter)) return false;
+            if (currentCategory === "manga" && coverTypeFilter && product.coverType !== coverTypeFilter) return false;
+            if (animeFilter && product.anime && !product.anime.toLowerCase().includes(animeFilter.toLowerCase())) return false;
+            if (ratingFilter && (!product.averageRating || product.averageRating < ratingFilter)) return false;
             if (inStockFilter !== null && product.inStock !== inStockFilter) return false;
             if (colorFilter && product.color !== colorFilter) return false;
             if (ageRatingFilter && product.ageRating !== ageRatingFilter) return false;
@@ -132,8 +135,9 @@ export default function Catalog() {
         priceRange,
         sizeFilter,
         languageFilter,
-        materialFilter,
-        brandFilter,
+        genderFilter,
+        coverTypeFilter,
+        animeFilter,
         ratingFilter,
         inStockFilter,
         colorFilter,
@@ -155,7 +159,7 @@ export default function Catalog() {
         const isWished = wishlist.includes(productId);
         try {
             const res = await fetch(
-                isWished ? `http://localhost:5000/api/wishlist/${productId}` : `http://localhost:5000/api/wishlist`,
+                isWished ? `/api/wishlist/${productId}` : `/api/wishlist`,
                 {
                     method: isWished ? "DELETE" : "POST",
                     credentials: "include",
@@ -179,8 +183,9 @@ export default function Catalog() {
         setSizeFilter("");
         setLanguageFilter("");
         setPriceRange([0, 10000]);
-        setMaterialFilter("");
-        setBrandFilter("");
+        setGenderFilter("");
+        setCoverTypeFilter("");
+        setAnimeFilter("");
         setRatingFilter(0);
         setInStockFilter(null);
         setColorFilter("");
@@ -232,10 +237,12 @@ export default function Catalog() {
                     setSizeFilter={setSizeFilter}
                     languageFilter={languageFilter}
                     setLanguageFilter={setLanguageFilter}
-                    materialFilter={materialFilter}
-                    setMaterialFilter={setMaterialFilter}
-                    brandFilter={brandFilter}
-                    setBrandFilter={setBrandFilter}
+                    genderFilter={genderFilter}
+                    setGenderFilter={setGenderFilter}
+                    coverTypeFilter={coverTypeFilter}
+                    setCoverTypeFilter={setCoverTypeFilter}
+                    animeFilter={animeFilter}
+                    setAnimeFilter={setAnimeFilter}
                     ratingFilter={ratingFilter}
                     setRatingFilter={setRatingFilter}
                     inStockFilter={inStockFilter}
