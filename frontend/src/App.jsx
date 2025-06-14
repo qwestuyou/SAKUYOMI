@@ -11,6 +11,7 @@ import CartIcon from './components/CartIcon';
 import EditProduct from "./pages/EditProduct";
 import CheckoutPage from "./pages/CheckoutPage";
 import OAuthSuccess from "./pages/OAuthSuccess";
+import AnalyticsPage from './Pages/Analytics';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/edit-product/:id" element={<EditProduct />} />
           <Route path="/checkout/:id" element={<CheckoutPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
         </Routes>
         <CartIcon />
       </Router>
